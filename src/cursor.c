@@ -5,8 +5,8 @@
 
 #include <stdlib.h>
 
-#define DEFAULT_MAX_ROW     40 
-#define DEFAULT_MAX_COLUMN  80 
+#define DEFAULT_MAX_ROW     40 - 1
+#define DEFAULT_MAX_COLUMN  80 - 1
 
 static line_t* _buffer;
 static line_t* _currentLine;
@@ -22,16 +22,16 @@ void cursor_attach_buffer(line_t* buffer)
 
 void move_cursor(int32_t row, int32_t column)
 {
-  _cursorRow = _cursorColumn = 1;
+  _cursorRow = _cursorColumn = 0;
 
   _currentLine = _buffer;
-  while ((_cursorRow <= row) && (_currentLine->next != NULL)) {
+  while ((_cursorRow < row) && (_currentLine->next != NULL)) {
     _currentLine = _currentLine->next;
     _cursorRow++;
   }
 
   _currentNode = _currentLine->base;
-  while ((_cursorColumn <= column) && (_currentNode->next != NULL)) {
+  while ((_cursorColumn < column) && (_currentNode->next != NULL)) {
     _currentNode = _currentNode->next;
     _cursorColumn++;
   }
@@ -68,11 +68,11 @@ void walk_cursor(int32_t deltaRow, int32_t deltaColumn)
   } else if (deltaColumn < 0) { // move left
     _currentNode = _currentLine->base;
     _cursorColumn += deltaColumn;
-    if (_cursorColumn <= 0) { // leftmost collision check
-      _cursorColumn = 1;
+    if (_cursorColumn < 0) { // leftmost collision check
+      _cursorColumn = 0;
     }
-    for (int i = _cursorColumn - 1; i != 0; i--) { // no pointer checks necessary
-      _currentNode = _currentNode->next;           // all nodes before must exist
+    for (int i = _cursorColumn; i != 0; i--) { // no pointer checks necessary
+      _currentNode = _currentNode->next;       // all nodes before must exist
     }
   }
 }
@@ -100,11 +100,11 @@ static node_t* getPreviousNode(line_t* line, int32_t column)
   node_t* node;
   node = line->base;
   
-  if (column == 1) {
+  if (column <= 0) {
     return NULL;
   }
 
-  column -= 2;
+  column -= 1;
 
   while (column != 0) {
     node = node->next;
