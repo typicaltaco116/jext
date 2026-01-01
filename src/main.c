@@ -2,30 +2,33 @@
 #include "data_structures.h"
 #include "file_handler.h"
 #include "terminal.h"
+#include "input.h"
+#include "cursor.h"
 
 #include <stdlib.h>
 #include <signal.h>
 #include <stdio.h>
 
+line_t* fileBuffer;
+
 void program_interrupt_handler(int);
 
 static void testingFunc(const char* filename)
 {
-  line_t* fileBuffer;
-  line_t* line;
   line_end_e lineEndingMode;
-  int32_t row = 1;
+  int32_t rowsCount;
 
   fileBuffer = create_file_buffer(filename, &lineEndingMode);
 
-  line = fileBuffer; // set to initial first line
+  draw_entire_text_window(fileBuffer, &rowsCount);
 
-  while ((line != NULL) && (row < ttyGetWindowYSize())) {
-    draw_line(line, row++, ttyGetWindowXSize());
-    line = line->next;
+  cursor_attach_buffer(fileBuffer);
+  move_cursor(0, 0);
+  draw_cursor();
+
+  while (1) { // currently need to quit with ctrl+c sry
+    input_handler();
   }
-
-  free_all_lines(&fileBuffer);
 }
 
 static void program_argument_handler(int argc, char** argv)
@@ -45,6 +48,7 @@ static void programInit(void)
 
 static void programExit(int code)
 {
+  free_all_lines(&fileBuffer);
   ttyRestore();
   exit(code);
 }
@@ -55,8 +59,6 @@ int main(int argc, char** argv)
   programInit();
 
   testingFunc(argv[1]);
-
-  fgetc(stdin);
 
   programExit(0);
 }

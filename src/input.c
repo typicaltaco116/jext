@@ -2,6 +2,8 @@
 
 #include "types.h"
 #include "ANSI_codes.h"
+#include "cursor.h"
+#include "drawing.h"
 
 #include <stdio.h>
 
@@ -38,4 +40,45 @@ input_type_e getInput(int* returnData)
   }
 
   return INPUT_ERROR;
+}
+
+static void inputHandleArrow(dir_e arrow)
+{
+  switch (arrow) {
+    case DIR_UP:
+      walk_cursor(-1, 0);
+      break;
+
+    case DIR_DOWN:
+      walk_cursor(1, 0);
+      break;
+
+    case DIR_LEFT:
+      walk_cursor(0, -1);
+      break;
+
+    case DIR_RIGHT:
+      walk_cursor(0, 1);
+      break;
+
+    default:
+  }
+
+  draw_cursor();
+}
+
+void input_handler(void)
+{
+  int inputData;
+
+  switch (getInput(&inputData)) {
+    case INPUT_ARROW:
+      inputHandleArrow((dir_e)inputData);
+      break;
+
+    case INPUT_TEXT:
+      break;
+
+    default:
+  }
 }

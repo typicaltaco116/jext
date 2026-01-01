@@ -25,7 +25,7 @@ $(objects): src/types.h
 
 build/terminal.o: src/terminal.h src/ANSI_codes.h
 
-build/input.o: src/input.h src/ANSI_codes.h
+build/input.o: src/input.h src/ANSI_codes.h src/cursor.h src/drawing.h
 
 build/drawing.o: src/drawing.h src/ANSI_codes.h src/data_structures.h src/cursor.h
 
