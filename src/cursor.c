@@ -43,20 +43,40 @@ void get_cursor_pos(int32_t* row, int32_t* column)
   *column = _cursorColumn;
 }
 
-void walk_cursor(int32_t deltaRow, int32_t deltaColumn)
+line_t* get_cursor_line(void)
 {
+  return _currentLine;
+}
+
+static void walkCursorRow(int32_t deltaRow)
+// Resets the current node and _cursorColumn
+{
+  if (deltaRow == 0) {
+    return;
+  }
+
   if (deltaRow > 0) { // move down
     while ((deltaRow > 0) && (_currentLine->next != NULL)) {
       _currentLine = _currentLine->next;
       deltaRow--;
       _cursorRow++;
     }
-  } else if (deltaRow < 0) { // move up
+  } else { // move up
     while ((deltaRow < 0) && (_currentLine->previous != NULL)) {
       _currentLine = _currentLine->previous;
       deltaRow++;
       _cursorRow--;
     }
+  }
+
+  _currentNode = _currentLine->base;
+  _cursorColumn = 0;
+}
+
+static void walkCursorColumn(int32_t deltaColumn)
+{
+  if (deltaColumn == 0) {
+    return;
   }
 
   if (deltaColumn > 0) { // move right
@@ -65,7 +85,7 @@ void walk_cursor(int32_t deltaRow, int32_t deltaColumn)
       deltaColumn--;
       _cursorColumn++;
     }
-  } else if (deltaColumn < 0) { // move left
+  } else { // move left
     _currentNode = _currentLine->base;
     _cursorColumn += deltaColumn;
     if (_cursorColumn < 0) { // leftmost collision check
@@ -74,6 +94,19 @@ void walk_cursor(int32_t deltaRow, int32_t deltaColumn)
     for (int i = _cursorColumn; i != 0; i--) { // no pointer checks necessary
       _currentNode = _currentNode->next;       // all nodes before must exist
     }
+  }
+}
+
+void walk_cursor(int32_t deltaRow, int32_t deltaColumn)
+{
+
+  if (deltaRow != 0) {
+    int32_t originalColumn = _cursorColumn;
+    walkCursorRow(deltaRow);
+    walkCursorColumn(originalColumn); // attempt to return to the original column
+  }
+  if (deltaColumn != 0) {
+    walkCursorColumn(deltaColumn);
   }
 }
 
