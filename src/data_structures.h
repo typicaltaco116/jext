@@ -1,5 +1,7 @@
 #pragma once
 
+#include "types.h"
+
 typedef struct node_s {
   struct node_s* next;
   char c; 
@@ -20,3 +22,5 @@ void free_entire_list(node_t** base);
 void free_line(line_t** line);
 
 void free_all_lines(line_t** firstLine);
+
+line_t* index_buffer(line_t* buffer, int32_t index);

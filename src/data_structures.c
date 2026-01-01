@@ -80,3 +80,15 @@ void free_all_lines(line_t** firstLine)
 
   *firstLine = NULL;
 }
+
+line_t* index_buffer(line_t* buffer, int32_t index)
+{
+  line_t* line = buffer;
+
+  while ((index != 0) && (line != NULL)) {
+    line = line->next;
+    index--;
+  }
+
+  return line;
+}
