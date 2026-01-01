@@ -9,8 +9,12 @@
 #include <stdlib.h>
 #include <ncurses.h>
 
-static int32_t _windowXSize = 0;
-static int32_t _windowYSize = 0;
+static int32_t _terminalColumns = 0;
+static int32_t _terminalRows = 0;
+static int32_t _textColumns = 0;
+static int32_t _textRows = 0;
+
+static WINDOW* _textWindow;
 
 static void getTerminalSize(int32_t* x, int32_t* y)
 {
@@ -38,11 +42,13 @@ void ttySetup(void)
   cbreak(); // canonical mode
   noecho(); // disable local echo
 
-  nodelay(stdscr, TRUE);
+  getTerminalSize(&_terminalColumns, &_terminalRows); // fill variables
 
-  getTerminalSize(&_windowXSize, &_windowYSize); // fill variables
-
-  newlineClear(_windowYSize);
+  _textRows = _terminalRows;
+  _textColumns = _terminalColumns;
+  _textWindow = newwin(_textRows, _textColumns, 0, 0); // create new window that is the whole terminal size
+  scrollok(_textWindow, true);
+  newlineClear(_terminalRows);
 }
 
 void ttyRestore(void)
@@ -55,18 +61,50 @@ void ttyRestore(void)
 
 void ttyMoveCursor(u16 x, u16 y)
 {
+  /*
   char buffer[20];
   snprintf(buffer, 20, ANSI_ESC "[%u;%uH", y, x); // kinda slow consider changing
   fputs(buffer, stdout);
   fflush(stdout);
+  */
+  wmove(_textWindow, y, x);
+  ttyRefresh();
 }
 
-int32_t ttyGetWindowXSize(void)
+void ttyPutChar(char c)
 {
-  return _windowXSize;
+  if (c == '\0') {
+    return;
+  }
+  waddch(_textWindow, c);
 }
 
-int32_t ttyGetWindowYSize(void)
+void ttyRefresh(void)
 {
-  return _windowYSize;
+  wrefresh(_textWindow);
+}
+
+int32_t get_terminal_columns(void)
+{
+  return _terminalColumns;
+}
+
+int32_t get_terminal_rows(void)
+{
+  return _terminalRows;
+}
+
+int32_t get_text_window_rows(void)
+{
+  return _textRows;
+}
+
+int32_t get_text_window_columns(void)
+{
+  return _textColumns;
+}
+
+void ttyScroll(int32_t n)
+{
+  wscrl(_textWindow, n);
 }
