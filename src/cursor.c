@@ -48,6 +48,11 @@ line_t* get_cursor_line(void)
   return _currentLine;
 }
 
+node_t* get_cursor_node(void)
+{
+  return _currentNode;
+}
+
 static void walkCursorRow(int32_t deltaRow)
 // Resets the current node and _cursorColumn
 {

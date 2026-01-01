@@ -9,6 +9,7 @@ void move_cursor(int32_t row, int32_t column);
 void get_cursor_pos(int32_t* row, int32_t* column);
 
 line_t* get_cursor_line(void);
+node_t* get_cusor_node(void);
 
 void walk_cursor(int32_t deltaRow, int32_t deltaColumn);
 
