@@ -52,23 +52,39 @@ void draw_line(line_t* line, int32_t row, int32_t maxColumns)
   ttyMoveCursor(0, row);
   
   while ((node != NULL) && (column < maxColumns)) {
-    fputc(node->c, stdout);
+    ttyPutChar(node->c);
     node = node->next;
     column++;
   }
 
-  fflush(stdout);
+  ttyRefresh();
 }
 
-void draw_entire_buffer(line_t* buffer)
+void draw_entire_text_window(line_t* startLine, int32_t* returnRowCount)
 {
   line_t* line;
-  int32_t row = 1;
+  int32_t row = 0;
 
-  line = buffer;
-  while ((line != NULL) && (row < ttyGetWindowYSize())) {
-    draw_line(line, row++, ttyGetWindowXSize());
+  line = startLine;
+  while ((line != NULL) && (row < get_text_window_rows())) {
+    draw_line(line, row++, get_text_window_columns());
     line = line->next;
+  }
+
+  *returnRowCount = row;
+}
+
+void scroll_text_window(line_t* line, int32_t n)
+// CURRENTLY ONLY WORKS WITH INCREMENTS OF 1
+// -1 scrolls up
+// +1 scrolls down
+{
+  ttyScroll(n);
+  if (n > 0) { // scroll down
+    draw_line(line, get_text_window_rows() - 1, get_text_window_columns());
+
+  } else if (n < 0) { // scroll up
+    draw_line(line, 0, get_text_window_columns());
   }
 }
 
@@ -76,6 +92,6 @@ void draw_cursor(void)
 {
   int x, y;
 
-  get_cursor_pos(&x, &y);
+  get_cursor_pos(&y, &x);
   ttyMoveCursor(x, y);
 }
