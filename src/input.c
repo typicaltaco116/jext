@@ -10,13 +10,13 @@ input_type_e getInput(int* returnData)
   int c;
 
   c = fgetc(stdin);
-  if (c != ANSI_ESC_CHAR) { // plain text
+  if (c != (int)ANSI_ESC_CHAR) { // plain text
     *returnData = c;
     return INPUT_TEXT;
   }
 
   c = fgetc(stdin);
-  if (c != '[') { // navigation keys
+  if (c == '[') { // navigation keys
     c = fgetc(stdin);
     switch (c) {
       case 'A':
