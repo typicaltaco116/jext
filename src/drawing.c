@@ -4,6 +4,7 @@
 #include "terminal.h"
 #include "ANSI_codes.h"
 #include "data_structures.h"
+#include "cursor.h"
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -57,4 +58,24 @@ void draw_line(line_t* line, int32_t row, int32_t maxColumns)
   }
 
   fflush(stdout);
+}
+
+void draw_entire_buffer(line_t* buffer)
+{
+  line_t* line;
+  int32_t row = 1;
+
+  line = buffer;
+  while ((line != NULL) && (row < ttyGetWindowYSize())) {
+    draw_line(line, row++, ttyGetWindowXSize());
+    line = line->next;
+  }
+}
+
+void draw_cursor(void)
+{
+  int x, y;
+
+  get_cursor_pos(&x, &y);
+  ttyMoveCursor(x, y);
 }
