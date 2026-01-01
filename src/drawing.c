@@ -46,13 +46,9 @@ void setDrawColor(tty_colors_e color)
   fflush(stdout);
 }
 
-void draw_line(line_t* line, int32_t row, int32_t maxColumns)
+void draw_to_end(node_t* node, int32_t row, int32_t column, int32_t maxColumns)
 {
-  node_t* node;
-  int32_t column = 0;
-
-  node = line->base;
-  ttyMoveCursor(0, row);
+  ttyMoveCursor(column, row);
   
   while ((node != NULL) && (column < maxColumns)) {
     ttyPutChar(node->c);
@@ -61,6 +57,11 @@ void draw_line(line_t* line, int32_t row, int32_t maxColumns)
   }
 
   ttyRefresh();
+}
+
+void draw_line(line_t* line, int32_t row, int32_t maxColumns)
+{
+  draw_to_end(line->base, row, 0, maxColumns);
 }
 
 void draw_entire_text_window(line_t* startLine, int32_t winOrigin, int32_t* returnRowCount)

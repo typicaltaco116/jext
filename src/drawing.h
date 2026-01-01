@@ -16,8 +16,8 @@ typedef enum{
 
 void setDrawColor(tty_colors_e color);
 
+void draw_to_end(node_t* node, int32_t row, int32_t column, int32_t maxColumns);
 void draw_line(line_t* line, int32_t row, int32_t maxColumns);
-
 void draw_entire_text_window(line_t* startLine, int32_t winOrigin, int32_t* returnRowCount);
 
 void scroll_text_window(line_t* line, int32_t n);
