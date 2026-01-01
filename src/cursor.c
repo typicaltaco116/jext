@@ -3,6 +3,8 @@
 #include "types.h"
 #include "data_structures.h"
 
+#include <stdlib.h>
+
 #define DEFAULT_MAX_ROW     40 
 #define DEFAULT_MAX_COLUMN  80 
 
@@ -58,7 +60,7 @@ void walk_cursor(int32_t deltaRow, int32_t deltaColumn)
   }
 
   if (deltaColumn > 0) { // move right
-    while ((deltaColumn > 0) && (_currentNode->next != NULL) {
+    while ((deltaColumn > 0) && (_currentNode->next != NULL)) {
       _currentNode = _currentNode->next;
       deltaColumn--;
       _cursorColumn++;
@@ -121,8 +123,7 @@ void delete_value_under_cursor(void)
 
   // We need to leave at least one node in each line
   if ((nextNode == NULL) && (previousNode == NULL)) { // only character in the row
-    _currentNode = NULL;
-    _currentLine = nextNode;
+    _currentNode->c = '\0';
     return;
   }
 
@@ -134,11 +135,11 @@ void delete_value_under_cursor(void)
   }
 
   if (nextNode == NULL) { // If and only if we are at the end of the line
-    free(_currentLine);   // does the cursor change position
-    _currentLine = previousNode;
+    free(_currentNode);   // does the cursor change position
+    _currentNode = previousNode;
     _cursorColumn--;      
   } else {
-    free(_currentLine);
-    _currentLine = nextNode;
+    free(_currentNode);
+    _currentNode = nextNode;
   }
 }
