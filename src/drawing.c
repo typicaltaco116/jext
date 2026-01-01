@@ -9,6 +9,9 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+static int32_t _textWindowOrigin; // this is the text buffer row that is currently
+                                  // at the top of the text window
+
 void setDrawColor(tty_colors_e color)
 {
   switch (color) {
@@ -60,10 +63,12 @@ void draw_line(line_t* line, int32_t row, int32_t maxColumns)
   ttyRefresh();
 }
 
-void draw_entire_text_window(line_t* startLine, int32_t* returnRowCount)
+void draw_entire_text_window(line_t* startLine, int32_t winOrigin, int32_t* returnRowCount)
 {
   line_t* line;
   int32_t row = 0;
+
+  _textWindowOrigin = winOrigin;
 
   line = startLine;
   while ((line != NULL) && (row < get_text_window_rows())) {
@@ -80,6 +85,8 @@ void scroll_text_window(line_t* line, int32_t n)
 // +1 scrolls down
 {
   ttyScroll(n);
+  _textWindowOrigin += n;
+
   if (n > 0) { // scroll down
     draw_line(line, get_text_window_rows() - 1, get_text_window_columns());
 
@@ -90,8 +97,14 @@ void scroll_text_window(line_t* line, int32_t n)
 
 void draw_cursor(void)
 {
-  int x, y;
+  int buffer_column, buffer_row;
 
-  get_cursor_pos(&y, &x);
-  ttyMoveCursor(x, y);
+  get_cursor_pos(&buffer_row, &buffer_column);
+  if (buffer_row >= get_text_window_rows() + _textWindowOrigin) {
+    scroll_text_window(get_cursor_line(), SCROLL_DOWN);
+  } else if (buffer_row < _textWindowOrigin) {
+    scroll_text_window(get_cursor_line(), SCROLL_UP);
+  }
+
+  ttyMoveCursor(buffer_column, buffer_row - _textWindowOrigin);
 }

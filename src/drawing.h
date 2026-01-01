@@ -1,6 +1,9 @@
 #include "types.h"
 #include "data_structures.h"
 
+#define SCROLL_DOWN (1)
+#define SCROLL_UP   (-1)
+
 typedef enum{
   TTY_RED,
   TTY_GREEN,
@@ -15,7 +18,7 @@ void setDrawColor(tty_colors_e color);
 
 void draw_line(line_t* line, int32_t row, int32_t maxColumns);
 
-void draw_entire_text_window(line_t* startLine, int32_t* returnRowCount);
+void draw_entire_text_window(line_t* startLine, int32_t winOrigin, int32_t* returnRowCount);
 
 void scroll_text_window(line_t* line, int32_t n);
 
