@@ -20,7 +20,7 @@ static void testingFunc(const char* filename)
 
   fileBuffer = create_file_buffer(filename, &lineEndingMode);
 
-  draw_entire_text_window(fileBuffer, &rowsCount);
+  draw_entire_text_window(fileBuffer, 0, &rowsCount);
 
   cursor_attach_buffer(fileBuffer);
   move_cursor(0, 0);

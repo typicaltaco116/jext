@@ -31,7 +31,7 @@ void move_cursor(int32_t row, int32_t column)
   }
 
   _currentNode = _currentLine->base;
-  while ((_cursorColumn < column) && (_currentNode->next != NULL)) {
+  while ((_cursorColumn < column) && (_currentNode != NULL)) {
     _currentNode = _currentNode->next;
     _cursorColumn++;
   }
@@ -85,7 +85,7 @@ static void walkCursorColumn(int32_t deltaColumn)
   }
 
   if (deltaColumn > 0) { // move right
-    while ((deltaColumn > 0) && (_currentNode->next != NULL)) {
+    while ((deltaColumn > 0) && (_currentNode != NULL)) {
       _currentNode = _currentNode->next;
       deltaColumn--;
       _cursorColumn++;
@@ -115,24 +115,6 @@ void walk_cursor(int32_t deltaRow, int32_t deltaColumn)
   }
 }
 
-void insert_value_after_cursor(char c)
-{
-  node_t* newNode;
-  node_t* oldNextNode;
-
-  newNode = create_empty_node();
-  newNode->c = c;
-  oldNextNode = _currentNode->next;
-
-  // Reattach
-  _currentNode->next = newNode;
-  newNode->next = oldNextNode;
-
-  // Increment cursor
-  _currentNode = _currentNode->next;
-  _cursorColumn++;
-}
-
 static node_t* getPreviousNode(line_t* line, int32_t column)
 {
   node_t* node;
@@ -151,33 +133,46 @@ static node_t* getPreviousNode(line_t* line, int32_t column)
   return node;
 }
 
-void delete_value_under_cursor(void)
+void insert_value_on_cursor(char c)
+{
+  node_t* prevNode;
+  node_t* newNode;
+
+  prevNode = getPreviousNode(_currentLine, _cursorColumn);
+
+  newNode = create_empty_node();
+  newNode->next = _currentNode;
+  newNode->c = c;
+
+  if (prevNode != NULL) {
+    prevNode->next = newNode;
+  } else {
+    _currentLine->base = newNode; // Reattach the line base
+  }
+
+  _cursorColumn++;
+}
+
+void delete_value_before_cursor(void)
 {
   node_t* previousNode;
-  node_t* nextNode;
+  node_t* prevPrevNode;
 
   previousNode = getPreviousNode(_currentLine, _cursorColumn);
-  nextNode = _currentNode->next;
+  prevPrevNode = getPreviousNode(_currentLine, _cursorColumn - 1);
 
-  // We need to leave at least one node in each line
-  if ((nextNode == NULL) && (previousNode == NULL)) { // only character in the row
-    _currentNode->c = '\0';
+  if (previousNode == NULL) { // must be at the base of a line
     return;
   }
 
-  // Reattach previous node if it exists
-  if (previousNode == NULL) {
-    _currentLine->base = nextNode;
-  } else {
-    previousNode->next = nextNode;
+  _cursorColumn--;
+
+  if (prevPrevNode == NULL) {
+    free(previousNode);
+    _currentLine->base = _currentNode; // !!!!! POTENTIAL PROBLEMS
+    return;
   }
 
-  if (nextNode == NULL) { // If and only if we are at the end of the line
-    free(_currentNode);   // does the cursor change position
-    _currentNode = previousNode;
-    _cursorColumn--;      
-  } else {
-    free(_currentNode);
-    _currentNode = nextNode;
-  }
+  free(previousNode);
+  prevPrevNode->next = _currentNode;
 }

@@ -23,3 +23,5 @@ void draw_entire_text_window(line_t* startLine, int32_t winOrigin, int32_t* retu
 void scroll_text_window(line_t* line, int32_t n);
 
 void draw_cursor(void);
+void draw_insert_text(char c, int32_t maxColumn);
+void draw_delete_text(int32_t maxColumn);

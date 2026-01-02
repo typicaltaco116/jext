@@ -96,16 +96,45 @@ void scroll_text_window(line_t* line, int32_t n)
   }
 }
 
+static void getCursorScreenPosition(int* row, int* column)
+{
+  get_cursor_pos(row, column);
+  row -= _textWindowOrigin;
+}
+
 void draw_cursor(void)
 {
-  int buffer_column, buffer_row;
+  int bufferRow, bufferColumn;
 
-  get_cursor_pos(&buffer_row, &buffer_column);
-  if (buffer_row >= get_text_window_rows() + _textWindowOrigin) {
+  get_cursor_pos(&bufferRow, &bufferColumn);
+  if (bufferRow >= get_text_window_rows() + _textWindowOrigin) {
     scroll_text_window(get_cursor_line(), SCROLL_DOWN);
-  } else if (buffer_row < _textWindowOrigin) {
+  } else if (bufferRow < _textWindowOrigin) {
     scroll_text_window(get_cursor_line(), SCROLL_UP);
   }
 
-  ttyMoveCursor(buffer_column, buffer_row - _textWindowOrigin);
+  ttyMoveCursor(bufferColumn, bufferRow - _textWindowOrigin);
+}
+
+void draw_insert_text(char c, int32_t maxColumn)
+{
+  int screenRow, screenColumn;
+
+  getCursorScreenPosition(&screenRow, &screenColumn);
+
+  insert_value_on_cursor(c);
+  draw_line(get_cursor_line(), screenRow, maxColumn);
+  draw_cursor();
+}
+
+void draw_delete_text(int32_t maxColumn)
+{
+  int screenRow, screenColumn;
+
+  getCursorScreenPosition(&screenRow, &screenColumn);
+
+  delete_value_before_cursor();
+  ttyDeleteTillLineEnd();
+  draw_line(get_cursor_line(), screenRow, maxColumn);
+  draw_cursor();
 }
