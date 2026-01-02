@@ -24,3 +24,6 @@ void free_line(line_t** line);
 void free_all_lines(line_t** firstLine);
 
 line_t* index_buffer(line_t* buffer, int32_t index);
+node_t* index_line(line_t* line, int32_t index);
+
+int32_t get_line_length(line_t* line);

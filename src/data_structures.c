@@ -92,3 +92,28 @@ line_t* index_buffer(line_t* buffer, int32_t index)
 
   return line;
 }
+
+node_t* index_line(line_t* line, int32_t index)
+{
+  node_t* node = line->base;
+
+  while ((index != 0) && (node != NULL)) {
+    node = node->next;
+    index--;
+  }
+
+  return node;
+}
+
+int32_t get_line_length(line_t* line)
+{
+  int32_t length;
+  node_t* node;
+
+  node = line->base;
+
+  while (node != NULL) {
+    node = node->next;
+    length++;
+  }
+}
