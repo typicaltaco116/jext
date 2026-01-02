@@ -68,7 +68,6 @@ void ttyMoveCursor(u16 x, u16 y)
   fflush(stdout);
   */
   wmove(_textWindow, y, x);
-  ttyRefresh();
 }
 
 void ttyPutChar(char c)

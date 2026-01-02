@@ -114,6 +114,7 @@ void draw_cursor(void)
   }
 
   ttyMoveCursor(bufferColumn, bufferRow - _textWindowOrigin);
+  ttyRefresh();
 }
 
 void draw_insert_text(char c, int32_t maxColumn)
@@ -135,6 +136,7 @@ void draw_delete_text(int32_t maxColumn)
   getCursorScreenPosition(&screenRow, &screenColumn);
 
   delete_value_before_cursor();
+  draw_cursor();
   ttyDeleteTillLineEnd();
   draw_line(get_cursor_line(), screenRow, maxColumn);
   draw_cursor();
