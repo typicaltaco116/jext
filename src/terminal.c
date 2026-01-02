@@ -79,6 +79,16 @@ void ttyPutChar(char c)
   waddch(_textWindow, c);
 }
 
+void ttyDeleteLine(void)
+{
+  wdeleteln(_textWindow);
+}
+
+void ttyDeleteTillLineEnd(void)
+{
+  wclrtoeol(_textWindow);
+}
+
 void ttyRefresh(void)
 {
   wrefresh(_textWindow);
