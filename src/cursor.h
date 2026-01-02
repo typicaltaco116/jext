@@ -17,6 +17,6 @@ void insert_value_on_cursor(char c);
 
 void insert_line_on_cursor(void);
 
-void delete_value_before_cursor(void);
+bool delete_value_before_cursor(void);
 
 void delete_cursor_line(void);

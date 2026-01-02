@@ -188,7 +188,8 @@ void insert_line_on_cursor(void)
   _cursorColumn = 0;
 }
 
-void delete_value_before_cursor(void)
+bool delete_value_before_cursor(void)
+// returns true if a value was actually deleted
 {
   node_t* previousNode;
   node_t* prevPrevNode;
@@ -197,7 +198,7 @@ void delete_value_before_cursor(void)
   prevPrevNode = getPreviousNode(_currentLine, _cursorColumn - 1);
 
   if (previousNode == NULL) { // must be at the base of a line
-    return;
+    return false;
   }
 
   _cursorColumn--;
@@ -205,11 +206,12 @@ void delete_value_before_cursor(void)
   if (prevPrevNode == NULL) {
     free(previousNode);
     _currentLine->base = _currentNode; // !!!!! POTENTIAL PROBLEMS
-    return;
+    return true;
   }
 
   free(previousNode);
   prevPrevNode->next = _currentNode;
+  return true;
 }
 
 node_t* getLineLastNode(line_t* line)
@@ -225,6 +227,8 @@ node_t* getLineLastNode(line_t* line)
   while (node->next != NULL) {
     node = node->next;
   }
+
+  return node;
 }
 
 void delete_line_on_cursor(void)

@@ -8,6 +8,8 @@ void ttyRestore(void);
 
 void ttyMoveCursor(u16 x, u16 y);
 void ttyPutChar(char c);
+void ttyInsertChar(char c);
+void ttyDeleteChar(void);
 void ttyDeleteLine(void);
 void ttyDeleteTillLineEnd(void);
 void ttyInsertLine(void);

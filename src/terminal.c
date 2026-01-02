@@ -72,10 +72,17 @@ void ttyMoveCursor(u16 x, u16 y)
 
 void ttyPutChar(char c)
 {
-  if (c == '\0') {
-    return;
-  }
   waddch(_textWindow, c);
+}
+
+void ttyInsertChar(char c)
+{
+  winsch(_textWindow, c);
+}
+
+void ttyDeleteChar(void)
+{
+  wdelch(_textWindow);
 }
 
 void ttyDeleteLine(void)

@@ -4,7 +4,7 @@
 #define SCROLL_DOWN (1)
 #define SCROLL_UP   (-1)
 
-typedef enum{
+typedef enum {
   TTY_RED,
   TTY_GREEN,
   TTY_BLUE,

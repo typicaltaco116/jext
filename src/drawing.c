@@ -122,7 +122,7 @@ void draw_insert_text(char c, int32_t maxColumn)
   getCursorScreenPosition(&screenRow, &screenColumn);
 
   insert_value_on_cursor(c);
-  draw_line(get_cursor_line(), screenRow, maxColumn);
+  ttyInsertChar(c);
   draw_cursor();
   ttyRefresh();
 }
@@ -133,12 +133,11 @@ void draw_delete_text(int32_t maxColumn)
 
   getCursorScreenPosition(&screenRow, &screenColumn);
 
-  delete_value_before_cursor();
-  draw_cursor();
-  ttyDeleteTillLineEnd();
-  draw_line(get_cursor_line(), screenRow, maxColumn);
-  draw_cursor();
-  ttyRefresh();
+  if (delete_value_before_cursor()) {
+    draw_cursor();
+    ttyDeleteChar();
+    ttyRefresh();
+  }
 }
 
 void draw_insert_newline(int32_t maxColumn)
