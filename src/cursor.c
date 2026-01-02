@@ -153,6 +153,41 @@ void insert_value_on_cursor(char c)
   _cursorColumn++;
 }
 
+static void insertEmptyLineAfter(line_t* line)
+{
+  line_t* newline;
+
+  newline = create_empty_line();
+  newline->next = line->next;;
+  newline->previous = line;
+  newline->base = NULL;
+
+  if (line->next != NULL) {
+    line->next->previous = newline;
+  }
+  line->next = newline;
+}
+
+void insert_line_on_cursor(void)
+{
+  node_t* prevNode;
+
+  insertEmptyLineAfter(_currentLine);
+  _currentLine->next->base = _currentNode;
+
+  prevNode = getPreviousNode(_currentLine, _cursorColumn);
+  if (prevNode != NULL) {
+    prevNode->next = NULL;
+  } else {
+    _currentLine->base = NULL;
+  }
+
+  _currentLine = _currentLine->next;
+  _cursorRow++;
+  _currentNode = _currentLine->base;
+  _cursorColumn = 0;
+}
+
 void delete_value_before_cursor(void)
 {
   node_t* previousNode;

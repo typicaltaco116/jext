@@ -15,19 +15,18 @@ line_end_e lineEndModeGlobal;
 
 void program_interrupt_handler(int);
 
-static void testingFunc(const char* filename)
+static void testingFunc(char* filename)
 {
-  int32_t rowsCount;
-
   filenameGlobal = filename;
 
   fileBuffer = create_file_buffer(filename, &lineEndModeGlobal);
 
-  draw_entire_text_window(fileBuffer, 0, &rowsCount);
+  draw_entire_text_window(fileBuffer, 0);
 
   cursor_attach_buffer(fileBuffer);
   move_cursor(0, 0);
   draw_cursor();
+  ttyRefresh();
 
   while (1) { // currently need to quit with ctrl+c sry
     input_handler();

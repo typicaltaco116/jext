@@ -15,4 +15,6 @@ void walk_cursor(int32_t deltaRow, int32_t deltaColumn);
 
 void insert_value_on_cursor(char c);
 
+void insert_line_on_cursor();
+
 void delete_value_before_cursor(void);

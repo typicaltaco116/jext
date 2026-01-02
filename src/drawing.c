@@ -62,21 +62,20 @@ void draw_line(line_t* line, int32_t row, int32_t maxColumns)
   draw_to_end(line->base, row, 0, maxColumns);
 }
 
-void draw_entire_text_window(line_t* startLine, int32_t winOrigin, int32_t* returnRowCount)
+static void draw_lines_to_end(line_t* line, int32_t row, int32_t winOrigin)
 {
-  line_t* line;
-  int32_t row = 0;
-
   _textWindowOrigin = winOrigin;
 
-  line = startLine;
   while ((line != NULL) && (row < get_text_window_rows())) {
     draw_line(line, row++, get_text_window_columns());
     line = line->next;
   }
-  ttyRefresh();
+}
 
-  *returnRowCount = row;
+void draw_entire_text_window(line_t* startLine, int32_t winOrigin)
+{
+  draw_lines_to_end(startLine, 0, winOrigin);
+  ttyRefresh();
 }
 
 void scroll_text_window(line_t* line, int32_t n)
@@ -114,7 +113,6 @@ void draw_cursor(void)
   }
 
   ttyMoveCursor(bufferColumn, bufferRow - _textWindowOrigin);
-  ttyRefresh();
 }
 
 void draw_insert_text(char c, int32_t maxColumn)
@@ -141,4 +139,23 @@ void draw_delete_text(int32_t maxColumn)
   draw_line(get_cursor_line(), screenRow, maxColumn);
   draw_cursor();
   ttyRefresh();
+}
+
+void draw_insert_newline(int32_t maxColumn)
+{
+  int screenRow, screenColumn;
+
+  draw_cursor();
+  ttyDeleteTillLineEnd();
+
+  insert_line_on_cursor();
+  draw_cursor();
+  ttyInsertLine();
+
+  getCursorScreenPosition(&screenRow, &screenColumn);
+  ttyMoveCursor(0, screenRow);
+  ttyDeleteTillLineEnd();
+  draw_line(get_cursor_line(), screenRow, maxColumn);
+
+  draw_cursor();
 }

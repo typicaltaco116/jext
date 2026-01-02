@@ -107,11 +107,13 @@ static void inputHandleArrow(dir_e arrow)
   }
 
   draw_cursor();
+  ttyRefresh();
 }
 
 static void inputHandleText(char c)
 {
   draw_insert_text(c, get_terminal_columns());
+  ttyRefresh();
 }
 
 static void inputHandleControl(char c)
@@ -119,6 +121,12 @@ static void inputHandleControl(char c)
   switch (c) {
     case ANSI_DEL_CHAR:
       draw_delete_text(get_terminal_columns());
+      ttyRefresh();
+      break;
+
+    case '\r':
+      draw_insert_newline(get_terminal_columns());
+      ttyRefresh();
       break;
 
     default:

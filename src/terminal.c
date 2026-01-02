@@ -88,6 +88,11 @@ void ttyDeleteTillLineEnd(void)
   wclrtoeol(_textWindow);
 }
 
+void ttyInsertLine(void)
+{
+  winsertln(_textWindow);
+}
+
 void ttyRefresh(void)
 {
   wrefresh(_textWindow);

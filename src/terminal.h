@@ -10,6 +10,7 @@ void ttyMoveCursor(u16 x, u16 y);
 void ttyPutChar(char c);
 void ttyDeleteLine(void);
 void ttyDeleteTillLineEnd(void);
+void ttyInsertLine(void);
 
 int32_t get_terminal_columns(void);
 int32_t get_terminal_rows(void);
