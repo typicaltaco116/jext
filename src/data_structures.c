@@ -18,7 +18,7 @@ line_t* create_empty_line(void)
   newLine = malloc(sizeof(line_t));
   newLine->next = NULL;
   newLine->previous = NULL;
-  newLine->base = create_empty_node();
+  newLine->base = NULL;
   return newLine;
 }
 

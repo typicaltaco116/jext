@@ -7,9 +7,9 @@
 
 #define LINE_MAX 150
 
-static line_end_e getFileLineEnding(FILE* stream);
-static bool isIgnoreCharacter(int c);
-static bool getline_list(node_t* baseNode,int32_t n, FILE* stream);
+static line_end_e getFileLineEnding(FILE*);
+static bool isIgnoreCharacter(int);
+static bool getline_list(line_t*, int32_t, FILE*);
 
 line_t* create_file_buffer(const char* filename, line_end_e* newlineMode)
 {
@@ -32,7 +32,7 @@ line_t* create_file_buffer(const char* filename, line_end_e* newlineMode)
       previousLine->next = currentLine;
     }
     previousLine = currentLine;
-  } while (!getline_list(previousLine->base, LINE_MAX, filePtr));
+  } while (!getline_list(previousLine, LINE_MAX, filePtr));
 
   // Seek back to start
   while (currentLine->previous != NULL) {
@@ -67,37 +67,41 @@ static line_end_e getFileLineEnding(FILE* stream)
   return UNIX_LINE_END; // error unknown!!!
 }
 
-static bool isIgnoreCharacter(int c)
-{
-  return (c == '\r') || (c == '\n') || (c == EOF);
-}
-
-static bool getline_list(node_t* baseNode,int32_t n, FILE* stream)
+static bool getline_list(line_t* emptyLine,int32_t n, FILE* stream)
 {
   int c;
   node_t* node;
 
-  node = baseNode;
+  do {
+    c = fgetc(stream);
+    n--;
 
-  // Priming read
-  c = fgetc(stream);
-  if (!isIgnoreCharacter(c)) {
-    node->c = (char)c;
-  }
-  n--;
+    if (!isIgnoreCharacter(c)) {
+      emptyLine->base = create_empty_node();
+      emptyLine->base->c = (char)c;
+    }
+
+  } while ((c != (int)'\n') && (c != EOF) && (n != 0) && 
+           (emptyLine->base == NULL));
+
+  node = emptyLine->base;
 
   while ((c != (int)'\n') && (c != EOF) && (n != 0)) {
     c = fgetc(stream);
+    n--;
+
     if (!isIgnoreCharacter(c)) {
       node->next = create_empty_node();
       node = node->next;
       node->c = (char)c;
     }
-    n--;
-  }
-  // THIS IS SHIT
 
-  node->next = NULL; // terminate list
+  }
 
   return (c == EOF);
+}
+
+static bool isIgnoreCharacter(int c)
+{
+  return (c == '\r') || (c == '\n') || (c == EOF);
 }
