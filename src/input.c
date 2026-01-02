@@ -4,6 +4,7 @@
 #include "ANSI_codes.h"
 #include "cursor.h"
 #include "drawing.h"
+#include "terminal.h"
 
 #include <stdio.h>
 
@@ -110,14 +111,14 @@ static void inputHandleArrow(dir_e arrow)
 
 static void inputHandleText(char c)
 {
-  draw_insert_text(c, 80);
+  draw_insert_text(c, get_terminal_columns());
 }
 
 static void inputHandleControl(char c)
 {
   switch (c) {
     case ANSI_DEL_CHAR:
-      draw_delete_text(80);
+      draw_delete_text(get_terminal_columns());
       break;
 
     default:

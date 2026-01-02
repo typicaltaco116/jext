@@ -99,7 +99,7 @@ void scroll_text_window(line_t* line, int32_t n)
 static void getCursorScreenPosition(int* row, int* column)
 {
   get_cursor_pos(row, column);
-  row -= _textWindowOrigin;
+  *row -= _textWindowOrigin;
 }
 
 void draw_cursor(void)
