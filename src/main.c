@@ -10,15 +10,18 @@
 #include <stdio.h>
 
 line_t* fileBuffer;
+char* filenameGlobal;
+line_end_e lineEndModeGlobal;
 
 void program_interrupt_handler(int);
 
 static void testingFunc(const char* filename)
 {
-  line_end_e lineEndingMode;
   int32_t rowsCount;
 
-  fileBuffer = create_file_buffer(filename, &lineEndingMode);
+  filenameGlobal = filename;
+
+  fileBuffer = create_file_buffer(filename, &lineEndModeGlobal);
 
   draw_entire_text_window(fileBuffer, 0, &rowsCount);
 
@@ -48,8 +51,15 @@ static void programInit(void)
 
 static void programExit(int code)
 {
-  free_all_lines(&fileBuffer);
   ttyRestore();
+
+  if(!write_file_buffer(fileBuffer, filenameGlobal, lineEndModeGlobal)) {
+    printf("Failed to write file %s\n", filenameGlobal);
+  } else {
+    printf("Successful write to file %s\n", filenameGlobal);
+  }
+
+  free_all_lines(&fileBuffer);
   exit(code);
 }
 
