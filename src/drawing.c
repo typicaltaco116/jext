@@ -55,8 +55,6 @@ void draw_to_end(node_t* node, int32_t row, int32_t column, int32_t maxColumns)
     node = node->next;
     column++;
   }
-
-  ttyRefresh();
 }
 
 void draw_line(line_t* line, int32_t row, int32_t maxColumns)
@@ -76,6 +74,7 @@ void draw_entire_text_window(line_t* startLine, int32_t winOrigin, int32_t* retu
     draw_line(line, row++, get_text_window_columns());
     line = line->next;
   }
+  ttyRefresh();
 
   *returnRowCount = row;
 }
@@ -94,6 +93,7 @@ void scroll_text_window(line_t* line, int32_t n)
   } else if (n < 0) { // scroll up
     draw_line(line, 0, get_text_window_columns());
   }
+  ttyRefresh();
 }
 
 static void getCursorScreenPosition(int* row, int* column)
@@ -125,6 +125,7 @@ void draw_insert_text(char c, int32_t maxColumn)
   insert_value_on_cursor(c);
   draw_line(get_cursor_line(), screenRow, maxColumn);
   draw_cursor();
+  ttyRefresh();
 }
 
 void draw_delete_text(int32_t maxColumn)
@@ -137,4 +138,5 @@ void draw_delete_text(int32_t maxColumn)
   ttyDeleteTillLineEnd();
   draw_line(get_cursor_line(), screenRow, maxColumn);
   draw_cursor();
+  ttyRefresh();
 }
