@@ -116,4 +116,6 @@ int32_t get_line_length(line_t* line)
     node = node->next;
     length++;
   }
+
+  return length;
 }

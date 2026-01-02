@@ -211,3 +211,59 @@ void delete_value_before_cursor(void)
   free(previousNode);
   prevPrevNode->next = _currentNode;
 }
+
+node_t* getLineLastNode(line_t* line)
+{
+  node_t* node;
+
+  node = line->base;
+
+  if (node == NULL) {
+    return NULL;
+  }
+
+  while (node->next != NULL) {
+    node = node->next;
+  }
+}
+
+void delete_line_on_cursor(void)
+// Deletes the current line that the cursor resides on.
+// Also moves all characters that were to the right of the cursor onto the next
+// line.
+{
+  node_t* prevLineLastNode;
+  line_t* prevLine;
+  int32_t prevLineLength;
+
+  prevLine = _currentLine->previous;
+
+  if (prevLine == NULL) {
+    return;
+  }
+
+  prevLineLength = get_line_length(prevLine);
+
+  prevLineLastNode = getLineLastNode(prevLine);
+  prevLineLastNode->next = _currentNode; // reattach
+
+  free_line(&_currentLine);
+  _currentLine = prevLine;
+
+  _cursorRow--;
+  _cursorColumn = prevLineLength;
+}
+
+void delete_cursor_line(void)
+{
+  line_t* temp;
+
+  temp = _currentLine->next;
+  if (temp == NULL) {
+    temp = _currentLine->previous;
+    _cursorRow--;
+  }
+  free_line(&_currentLine);
+
+  _currentLine = temp;
+}
