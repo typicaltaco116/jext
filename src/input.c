@@ -14,7 +14,9 @@ static void inputHandleArrow(dir_e);
 static void inputHandleText(char);
 static void inputHandleControl(char);
 
-void input_handler(void)
+bool _exitFlag = false;
+
+bool input_handler(void)
 {
   int inputData;
 
@@ -33,6 +35,8 @@ void input_handler(void)
 
     default:
   }
+
+  return !_exitFlag;
 }
 
 static input_type_e getInput(int* returnData)
@@ -45,18 +49,14 @@ static input_type_e getInput(int* returnData)
     case (int)ANSI_ESC_CHAR:
       return handleEscapeCode(returnData);
 
-    case (int)'\r': // carriage return from return key
-    case (int)'\x7F': // delete character
-      *returnData = c;
-      return INPUT_CONTROL;
-
     case ' ' ... '~':
       *returnData = c;
       return INPUT_TEXT;
 
 
     default:
-      return INPUT_ERROR;
+      *returnData = c;
+      return INPUT_CONTROL; // assume everything else is control
   }
 }
 
@@ -128,6 +128,10 @@ static void inputHandleControl(char c)
     case '\r':
       draw_insert_newline(get_terminal_columns());
       ttyRefresh();
+      break;
+
+    case ANSI_CTRL_X_CHAR:
+      _exitFlag = true;
       break;
 
     default:

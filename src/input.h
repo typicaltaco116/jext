@@ -14,4 +14,4 @@ typedef enum {
   DIR_RIGHT,
 } dir_e;
 
-void input_handler(void);
+bool input_handler(void);

@@ -31,9 +31,7 @@ static void textEdit(char* filename)
   draw_cursor();
   ttyRefresh();
 
-  while (1) { // currently need to quit with ctrl+c sry
-    input_handler();
-  }
+  while (input_handler());
 }
 
 int main(int argc, char** argv)
