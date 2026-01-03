@@ -28,14 +28,6 @@ static void getTerminalSize(int32_t* x, int32_t* y)
   *y = w.ws_row;
 }
 
-static void newlineClear(u16 totalRows)
-{
-  for (u16 i = totalRows; i != 0; i--) {
-    fputs("\r\n", stdout);
-  }
-  fflush(stdout);
-}
-
 void ttySetup(void)
 {
   initscr(); // init ncurses screen for restoring later
@@ -48,15 +40,11 @@ void ttySetup(void)
   _textColumns = _terminalColumns;
   _textWindow = newwin(_textRows, _textColumns, 0, 0); // create new window that is the whole terminal size
   scrollok(_textWindow, true);
-  newlineClear(_terminalRows);
 }
 
 void ttyRestore(void)
 {
   endwin();
-  fputs(ANSI_HOME, stdout);
-  fputs(ANSI_CLEAR, stdout);
-  fflush(stdout);
 }
 
 void ttyMoveCursor(u16 x, u16 y)

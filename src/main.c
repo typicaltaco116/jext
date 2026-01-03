@@ -10,43 +10,56 @@
 #include <stdio.h>
 
 line_t* fileBuffer;
-char* filenameGlobal;
-line_end_e lineEndModeGlobal;
+char* filenameArgument;
+line_end_e lineEndMode;
 
 static void program_interrupt_handler(int);
 static void program_argument_handler(int, char**);
-static void programInit(void);
-static void programExit(int);
 
-static void textEdit(char* filename)
+static void loadFileBuffer(void)
 {
-  filenameGlobal = filename;
-
-  fileBuffer = create_file_buffer(filename, &lineEndModeGlobal);
-
-  draw_entire_text_window(fileBuffer, 0);
-
+  fileBuffer = create_file_buffer(filenameArgument, &lineEndMode);
   cursor_attach_buffer(fileBuffer);
+}
+
+static void initTextWindow(void)
+{
+  draw_entire_text_window(fileBuffer, 0);
   move_cursor(0, 0);
   draw_cursor();
   ttyRefresh();
-
-  while (input_handler());
 }
 
 int main(int argc, char** argv)
 {
   program_argument_handler(argc, argv);
-  programInit();
+  signal(SIGINT, program_interrupt_handler);
 
-  textEdit(argv[1]);
+  ttySetup();
 
-  programExit(0);
+  loadFileBuffer();
+  initTextWindow();
+
+  while(input_handler());
+
+  ttyRestore();
+
+  if(!write_file_buffer(fileBuffer, filenameArgument, lineEndMode)) {
+    printf("Failed to write file %s\n", filenameArgument);
+  } else {
+    printf("Successful write to file %s\n", filenameArgument);
+  }
+
+  free_all_lines(&fileBuffer);
+
+  return 0;
 }
+
 
 static void program_interrupt_handler(int signal)
 {
-  programExit(0);
+  ttyRestore();
+  exit(0);
 }
 
 static void program_argument_handler(int argc, char** argv)
@@ -55,25 +68,5 @@ static void program_argument_handler(int argc, char** argv)
     printf("Error: INCORRECT ARGUMENTS\n");
     exit(1);
   }
-}
-
-static void programInit(void)
-{
-  ttySetup();
-
-  signal(SIGINT, program_interrupt_handler);
-}
-
-static void programExit(int code)
-{
-  ttyRestore();
-
-  if(!write_file_buffer(fileBuffer, filenameGlobal, lineEndModeGlobal)) {
-    printf("Failed to write file %s\n", filenameGlobal);
-  } else {
-    printf("Successful write to file %s\n", filenameGlobal);
-  }
-
-  free_all_lines(&fileBuffer);
-  exit(code);
+  filenameArgument = argv[1];
 }
