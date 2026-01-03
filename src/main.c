@@ -19,6 +19,9 @@ static void program_argument_handler(int, char**);
 static void loadFileBuffer(void)
 {
   fileBuffer = create_file_buffer(filenameArgument, &lineEndMode);
+  if (fileBuffer == NULL) {
+    fileBuffer = create_empty_line(); // new file
+  }
   cursor_attach_buffer(fileBuffer);
 }
 
