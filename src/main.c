@@ -13,9 +13,12 @@ line_t* fileBuffer;
 char* filenameGlobal;
 line_end_e lineEndModeGlobal;
 
-void program_interrupt_handler(int);
+static void program_interrupt_handler(int);
+static void program_argument_handler(int, char**);
+static void programInit(void);
+static void programExit(int);
 
-static void testingFunc(char* filename)
+static void textEdit(char* filename)
 {
   filenameGlobal = filename;
 
@@ -31,6 +34,21 @@ static void testingFunc(char* filename)
   while (1) { // currently need to quit with ctrl+c sry
     input_handler();
   }
+}
+
+int main(int argc, char** argv)
+{
+  program_argument_handler(argc, argv);
+  programInit();
+
+  textEdit(argv[1]);
+
+  programExit(0);
+}
+
+static void program_interrupt_handler(int signal)
+{
+  programExit(0);
 }
 
 static void program_argument_handler(int argc, char** argv)
@@ -60,19 +78,4 @@ static void programExit(int code)
 
   free_all_lines(&fileBuffer);
   exit(code);
-}
-
-int main(int argc, char** argv)
-{
-  program_argument_handler(argc, argv);
-  programInit();
-
-  testingFunc(argv[1]);
-
-  programExit(0);
-}
-
-void program_interrupt_handler(int signal)
-{
-  programExit(0);
 }
