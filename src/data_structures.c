@@ -50,6 +50,28 @@ void free_line(line_t** line)
   line_t* previous;
   line_t* next;
 
+  previous = (*line)->previous;
+  next = (*line)->next;
+  if (previous != NULL) {
+    previous->next = next;
+  }
+  if (next != NULL) {
+    next->previous = previous;
+  }
+
+  free(*line);
+  *line = NULL;
+}
+
+void free_line_with_list(line_t** line)
+/*
+  Frees the memory used by a line's struct and its linked list.
+  Also handles the reattachment of the line's surroundings
+*/
+{
+  line_t* previous;
+  line_t* next;
+
   free_entire_list(&(*line)->base);
 
   previous = (*line)->previous;
@@ -75,7 +97,7 @@ void free_all_lines(line_t** firstLine)
   while (line != NULL) {
     lineToDelete = line;
     line = line->next;
-    free_line(&lineToDelete);
+    free_line_with_list(&lineToDelete);
   }
 
   *firstLine = NULL;
@@ -107,7 +129,7 @@ node_t* index_line(line_t* line, int32_t index)
 
 int32_t get_line_length(line_t* line)
 {
-  int32_t length;
+  int32_t length = 0;
   node_t* node;
 
   node = line->base;

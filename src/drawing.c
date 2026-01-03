@@ -133,11 +133,22 @@ void draw_delete_text(int32_t maxColumn)
 
   getCursorScreenPosition(&screenRow, &screenColumn);
 
-  if (delete_value_before_cursor()) {
+  if (delete_value_before_cursor()) { // issue with beign at top of screen
     draw_cursor();
     ttyDeleteChar();
-    ttyRefresh();
+  } else {
+    ttyMoveCursor(0, screenRow);
+    ttyDeleteLine();
+
+    ttyMoveCursor(0, screenRow - 1);
+    ttyDeleteTillLineEnd();
+
+    delete_line_on_cursor();
+    draw_line(get_cursor_line(), screenRow - 1, maxColumn);
+    draw_cursor();
   }
+
+  ttyRefresh();
 }
 
 void draw_insert_newline(int32_t maxColumn)

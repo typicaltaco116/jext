@@ -249,7 +249,11 @@ void delete_line_on_cursor(void)
   prevLineLength = get_line_length(prevLine);
 
   prevLineLastNode = getLineLastNode(prevLine);
-  prevLineLastNode->next = _currentNode; // reattach
+  if (prevLineLastNode == NULL) {
+    prevLine->base = _currentNode;
+  } else {
+    prevLineLastNode->next = _currentNode; // reattach
+  }
 
   free_line(&_currentLine);
   _currentLine = prevLine;
@@ -267,7 +271,7 @@ void delete_cursor_line(void)
     temp = _currentLine->previous;
     _cursorRow--;
   }
-  free_line(&_currentLine);
+  free_line_with_list(&_currentLine);
 
   _currentLine = temp;
 }
