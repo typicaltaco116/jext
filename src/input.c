@@ -8,12 +8,34 @@
 
 #include <stdio.h>
 
+static input_type_e getInput(int*);
 static input_type_e handleEscapeCode(int*);
 static void inputHandleArrow(dir_e);
 static void inputHandleText(char);
 static void inputHandleControl(char);
 
-input_type_e getInput(int* returnData)
+void input_handler(void)
+{
+  int inputData;
+
+  switch (getInput(&inputData)) {
+    case INPUT_ARROW:
+      inputHandleArrow((dir_e)inputData);
+      break;
+
+    case INPUT_TEXT:
+      inputHandleText((char)inputData);
+      break;
+
+    case INPUT_CONTROL:
+      inputHandleControl((char)inputData);
+      break;
+
+    default:
+  }
+}
+
+static input_type_e getInput(int* returnData)
 {
   int c;
 
@@ -61,27 +83,6 @@ static input_type_e handleEscapeCode(int* returnData)
       return INPUT_ERROR;
   }
   return INPUT_ARROW;
-}
-
-void input_handler(void)
-{
-  int inputData;
-
-  switch (getInput(&inputData)) {
-    case INPUT_ARROW:
-      inputHandleArrow((dir_e)inputData);
-      break;
-
-    case INPUT_TEXT:
-      inputHandleText((char)inputData);
-      break;
-
-    case INPUT_CONTROL:
-      inputHandleControl((char)inputData);
-      break;
-
-    default:
-  }
 }
 
 static void inputHandleArrow(dir_e arrow)
