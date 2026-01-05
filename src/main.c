@@ -12,14 +12,13 @@
 
 line_t* fileBuffer;
 char* filenameArgument;
-line_end_e lineEndMode;
 
 static void program_interrupt_handler(int);
 static void program_argument_handler(int, char**);
 
 static void loadFileBuffer(void)
 {
-  fileBuffer = create_file_buffer(filenameArgument, &lineEndMode);
+  fileBuffer = create_file_buffer(filenameArgument, NULL);
   if (fileBuffer == NULL) {
     fileBuffer = create_empty_line(); // new file
   }

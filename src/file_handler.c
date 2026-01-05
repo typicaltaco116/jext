@@ -27,7 +27,10 @@ line_t* create_file_buffer(const char* filename, line_end_e* newlineMode)
     return NULL;
   }
 
-  *newlineMode = getFileLineEnding(filePtr);
+  _currentNewlineMode = getFileLineEnding(filePtr);
+  if (newlineMode != NULL) {
+    *newlineMode = _currentNewlineMode;
+  }
 
   do {
     currentLine = create_empty_line();
@@ -43,8 +46,7 @@ line_t* create_file_buffer(const char* filename, line_end_e* newlineMode)
     currentLine = currentLine->previous;
   }
 
-  // Set internal variables
-  _currentNewlineMode = *newlineMode;
+  // Set internal variable
   _currentBuffer = currentLine;
 
   return currentLine; // return first line
