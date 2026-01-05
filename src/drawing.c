@@ -92,7 +92,23 @@ void scroll_text_window(line_t* line, int32_t n)
   } else if (n < 0) { // scroll up
     draw_line(line, 0, get_text_window_columns());
   }
-  ttyRefresh();
+}
+
+static void drawBottomLine(line_t* inputLine, int32_t screenRow, int32_t maxColumn)
+{
+  line_t* line = inputLine;
+
+  while (screenRow < get_text_window_rows() - 1) {
+    if (line->next == NULL) {
+      return;
+    }
+
+    screenRow++;
+    line = line->next;
+  }
+
+  draw_line(line, get_text_window_rows() - 1, maxColumn);
+  return;
 }
 
 static void getCursorScreenPosition(int* row, int* column)
@@ -136,7 +152,7 @@ void draw_delete_text(int32_t maxColumn)
   if (delete_value_before_cursor()) { // issue with beign at top of screen
     draw_cursor();
     ttyDeleteChar();
-  } else {
+  } else if (get_cursor_line()->previous != NULL) {
     ttyMoveCursor(0, screenRow);
     ttyDeleteLine();
 
@@ -144,7 +160,10 @@ void draw_delete_text(int32_t maxColumn)
     ttyDeleteTillLineEnd();
 
     delete_line_on_cursor();
+
     draw_line(get_cursor_line(), screenRow - 1, maxColumn);
+    drawBottomLine(get_cursor_line(), screenRow - 1, maxColumn);
+
     draw_cursor();
   }
 
