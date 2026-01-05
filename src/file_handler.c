@@ -12,6 +12,9 @@ static bool isIgnoreCharacter(int);
 static bool getline_list(line_t*, int32_t, FILE*);
 static void writeline_list(line_t*, FILE*);
 
+static line_t* _currentBuffer;
+static line_end_e _currentNewlineMode;
+
 line_t* create_file_buffer(const char* filename, line_end_e* newlineMode)
 {
   FILE* filePtr;
@@ -39,6 +42,10 @@ line_t* create_file_buffer(const char* filename, line_end_e* newlineMode)
   while (currentLine->previous != NULL) {
     currentLine = currentLine->previous;
   }
+
+  // Set internal variables
+  _currentNewlineMode = *newlineMode;
+  _currentBuffer = currentLine;
 
   return currentLine; // return first line
 }
@@ -105,6 +112,11 @@ static bool getline_list(line_t* emptyLine,int32_t n, FILE* stream)
 static bool isIgnoreCharacter(int c)
 {
   return (c == '\r') || (c == '\n') || (c == EOF);
+}
+
+bool write_current_buffer(const char* filename)
+{
+  return write_file_buffer(_currentBuffer, filename, _currentNewlineMode);
 }
 
 bool write_file_buffer(line_t* buffer, const char* filename, line_end_e newlineMode)

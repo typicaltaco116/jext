@@ -50,7 +50,7 @@ int main(int argc, char** argv)
 
   ttyRestore();
 
-  if(!write_file_buffer(fileBuffer, filenameArgument, lineEndMode)) {
+  if(!write_current_buffer(filenameArgument)) {
     printf("Failed to write file %s\n", filenameArgument);
   } else {
     printf("Successful write to file %s\n", filenameArgument);

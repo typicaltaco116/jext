@@ -10,4 +10,6 @@ typedef enum {
 
 line_t* create_file_buffer(const char* filename, line_end_e* newlineMode);
 
+bool write_current_buffer(const char* filename);
+
 bool write_file_buffer(line_t* buffer, const char* filename, line_end_e newlineMode);

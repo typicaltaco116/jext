@@ -134,6 +134,12 @@ static void inputHandleControl(char c)
       _exitFlag = true;
       break;
 
+    case ANSI_CTRL_T_CHAR:
+      break;
+
+    case ANSI_CTRL_S_CHAR:
+      break;
+
     default:
   }
 }

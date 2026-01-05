@@ -5,7 +5,10 @@
 #define ANSI_ESC_CHAR     '\x1B'
 #define ANSI_DEL_CHAR     '\x7F'
 #define ANSI_BS_CHAR      '\b'
+
 #define ANSI_CTRL_X_CHAR  '\x18'
+#define ANSI_CTRL_T_CHAR  '\x14'
+#define ANSI_CTRL_S_CHAR  '\x13'
 
 #define ANSI_CLEAR  ANSI_ESC "[2J"
 #define ANSI_HOME   ANSI_ESC "[H"
