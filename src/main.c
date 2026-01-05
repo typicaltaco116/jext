@@ -4,6 +4,7 @@
 #include "terminal.h"
 #include "input.h"
 #include "cursor.h"
+#include "toolbar.h"
 
 #include <stdlib.h>
 #include <signal.h>
@@ -40,6 +41,8 @@ int main(int argc, char** argv)
 
   ttySetup();
 
+  toolbar_init();
+  toolbar_update_filename(filenameArgument);
   loadFileBuffer();
   initTextWindow();
 
@@ -57,7 +60,6 @@ int main(int argc, char** argv)
 
   return 0;
 }
-
 
 static void program_interrupt_handler(int signal)
 {

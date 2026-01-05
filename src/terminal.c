@@ -36,9 +36,9 @@ void ttySetup(void)
 
   getTerminalSize(&_terminalColumns, &_terminalRows); // fill variables
 
-  _textRows = _terminalRows;
+  _textRows = _terminalRows - TOOLBAR_WINDOW_ROWS;
   _textColumns = _terminalColumns;
-  _textWindow = newwin(_textRows, _textColumns, 0, 0); // create new window that is the whole terminal size
+  _textWindow = newwin(_textRows, _textColumns, 0, 0);
   scrollok(_textWindow, true);
 }
 

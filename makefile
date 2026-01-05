@@ -1,7 +1,8 @@
 sources = src/main.c src/terminal.c src/drawing.c src/input.c \
-	  src/data_structures.c src/file_handler.c src/cursor.c
+	  src/data_structures.c src/file_handler.c src/cursor.c src/toolbar.c
 objects = build/main.o build/terminal.o build/drawing.o build/input.o \
-	  build/data_structures.o build/file_handler.o build/cursor.o
+	  build/data_structures.o build/file_handler.o build/cursor.o \
+	  build/toolbar.o
 
 linking_flags = -lncurses -ltinfo
 
@@ -36,6 +37,8 @@ build/data_structures.o: src/data_structures.h
 build/file_handler.o: src/file_handler.h src/data_structures.h
 
 build/cursor.o: src/cursor.h src/data_structures.h
+
+build/toolbar.o: src/toolbar.h src/terminal.h
 
 .PHONY: clean
 clean:

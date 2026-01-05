@@ -1,6 +1,7 @@
 #include "types.h"
 
-#define CENTERED_LINE_SIZE 40
+#define CENTERED_LINE_SIZE  40
+#define TOOLBAR_WINDOW_ROWS 4
 
 void ttySetup(void);
 

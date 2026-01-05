@@ -25,3 +25,5 @@
 #define ANSI_COLOR_MAGENTA   ANSI_ESC "[35m"
 #define ANSI_COLOR_CYAN      ANSI_ESC "[36m"
 #define ANSI_COLOR_DEFAULT   ANSI_ESC "[0m"
+
+#define ANSI_INVERT_ON       ANSI_ESC "[7m"
