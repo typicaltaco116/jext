@@ -14,6 +14,7 @@ void ttyDeleteChar(void);
 void ttyDeleteLine(void);
 void ttyDeleteTillLineEnd(void);
 void ttyInsertLine(void);
+void ttySetCursorVisibility(bool enabled);
 
 int32_t get_terminal_columns(void);
 int32_t get_terminal_rows(void);

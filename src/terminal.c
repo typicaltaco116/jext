@@ -93,6 +93,16 @@ void ttyRefresh(void)
   wrefresh(_textWindow);
 }
 
+void ttySetCursorVisibility(bool enabled)
+{
+  if (enabled) {
+    fputs(ANSI_CURSOR_SHOW, stdout);
+  } else {
+    fputs(ANSI_CURSOR_HIDE, stdout);
+  }
+  fflush(stdout);
+}
+
 int32_t get_terminal_columns(void)
 {
   return _terminalColumns;

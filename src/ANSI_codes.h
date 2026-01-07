@@ -20,6 +20,8 @@
 #define ANSI_RIGHT  ANSI_ESC "[C"
 
 #define ANSI_MOVE_CURSOR(x,y) (ANSI_ESC "[" y ";" x "H")
+#define ANSI_CURSOR_HIDE ANSI_ESC "[?25l"
+#define ANSI_CURSOR_SHOW ANSI_ESC "[?25h"
 
 #define ANSI_COLOR_RED       ANSI_ESC "[31m"
 #define ANSI_COLOR_GREEN     ANSI_ESC "[32m"
