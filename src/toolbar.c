@@ -109,3 +109,8 @@ void toolbar_remove_filename_char(void)
 
   _filenameString.ptr[_filenameString.used - 1] = '\0';
 }
+
+void toolbar_free_all(void)
+{
+  free(_filenameString.ptr);
+}

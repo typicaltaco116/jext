@@ -5,6 +5,7 @@
 #include "input.h"
 #include "cursor.h"
 #include "toolbar.h"
+#include "toolbar.h"
 
 #include <stdlib.h>
 #include <signal.h>
@@ -56,6 +57,7 @@ int main(int argc, char** argv)
   }
 
   free_all_lines(&fileBuffer);
+  toolbar_free_all();
 
   return 0;
 }
