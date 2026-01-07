@@ -1,8 +1,10 @@
+#include "types.h"
+
 void toolbar_init(void);
 
 void toolbar_update_filename(const char* filename);
 
-void draw_toolbar(void);
+void draw_toolbar(bool blinkEnabled);
 
 void toolbar_append_filename_char(char c);
 

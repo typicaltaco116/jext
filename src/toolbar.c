@@ -33,7 +33,7 @@ void toolbar_init(void)
   wrefresh(_toolbarWindow);
 }
 
- void draw_toolbar(void)
+ void draw_toolbar(bool blinkEnabled)
 {
   wmove(_toolbarWindow, TOOLBAR_FILENAME_ROW, 0);
   wclrtoeol(_toolbarWindow);
@@ -41,9 +41,24 @@ void toolbar_init(void)
   wattr_on(_toolbarWindow, WA_STANDOUT | WA_BOLD, NULL);
 
   wmove(_toolbarWindow, TOOLBAR_FILENAME_ROW, get_terminal_columns() / 2 - (_filenameString.used + 7) / 2);
-  winPutStr(_toolbarWindow, "--- ");
+
+  if (blinkEnabled) {
+    wattr_on(_toolbarWindow, WA_BLINK, NULL);
+    winPutStr(_toolbarWindow, "--- ");
+    wattr_off(_toolbarWindow, WA_BLINK, NULL);
+  } else {
+    winPutStr(_toolbarWindow, "--- ");
+  }
+
   winPutStr(_toolbarWindow, _filenameString.ptr);
-  winPutStr(_toolbarWindow, " ---");
+
+  if (blinkEnabled) {
+    wattr_on(_toolbarWindow, WA_BLINK, NULL);
+    winPutStr(_toolbarWindow, " ---");
+    wattr_off(_toolbarWindow, WA_BLINK, NULL);
+  } else {
+    winPutStr(_toolbarWindow, " ---");
+  }
 
   wattr_off(_toolbarWindow, WA_STANDOUT | WA_BOLD, NULL);
   wrefresh(_toolbarWindow);
@@ -54,7 +69,7 @@ void toolbar_update_filename(const char* filename)
   filenameStringInit();
   filenameStringAddStr(filename);
 
-  draw_toolbar();
+  draw_toolbar(false);
 }
 
 static void winPutStr(WINDOW* window, const char* str)

@@ -141,7 +141,7 @@ static void inputHandleText(char c)
 
     case SM_EDIT_FILENAME:
     toolbar_append_filename_char(c);
-    draw_toolbar();
+    draw_toolbar(true);
     break;
 
     default:
@@ -185,7 +185,7 @@ static void insertModeControlHandler(char c)
 
     case ANSI_CTRL_T_CHAR:
       ttySetCursorVisibility(0);
-      draw_toolbar();
+      draw_toolbar(true);
       _mode = SM_EDIT_FILENAME;
       break;
 
@@ -201,12 +201,13 @@ static void editFilenameModeControlHandler(char c)
   switch (c) {
     case ANSI_DEL_CHAR:
       toolbar_remove_filename_char();
-      draw_toolbar();
+      draw_toolbar(true);
       break;
 
     case '\r':
     case ANSI_CTRL_T_CHAR:
       _mode = SM_INSERT;
+      draw_toolbar(false);
       ttySetCursorVisibility(1);
       draw_cursor();
       ttyRefresh();
