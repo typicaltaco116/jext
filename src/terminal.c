@@ -45,6 +45,7 @@ void ttySetup(void)
 void ttyRestore(void)
 {
   endwin();
+  ttySetCursorVisibility(1);
 }
 
 void ttyMoveCursor(u16 x, u16 y)
