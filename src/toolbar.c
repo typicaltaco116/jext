@@ -114,3 +114,8 @@ void toolbar_free_all(void)
 {
   free(_filenameString.ptr);
 }
+
+char* get_toolbar_filename_string(void)
+{
+  return _filenameString.ptr;
+}
