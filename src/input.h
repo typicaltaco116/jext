@@ -14,4 +14,11 @@ typedef enum {
   DIR_RIGHT,
 } dir_e;
 
+typedef enum {
+  SM_INSERT,
+  SM_EDIT_FILENAME,
+  SM_QUIT,
+} sm_modes_e;
+
+
 bool input_handler(void);

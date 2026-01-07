@@ -5,16 +5,17 @@
 #include "cursor.h"
 #include "drawing.h"
 #include "terminal.h"
+#include "toolbar.h"
 
 #include <stdio.h>
 
+bool _exitFlag = false;
+sm_modes_e _mode = SM_INSERT;
+
 static input_type_e getInput(int*);
-static input_type_e handleEscapeCode(int*);
 static void inputHandleArrow(dir_e);
 static void inputHandleText(char);
 static void inputHandleControl(char);
-
-bool _exitFlag = false;
 
 bool input_handler(void)
 {
@@ -38,6 +39,9 @@ bool input_handler(void)
 
   return !_exitFlag;
 }
+
+
+static input_type_e handleEscapeCode(int*);
 
 static input_type_e getInput(int* returnData)
 {
@@ -85,7 +89,23 @@ static input_type_e handleEscapeCode(int* returnData)
   return INPUT_ARROW;
 }
 
+static void insertModeArrowHandler(dir_e);
+
 static void inputHandleArrow(dir_e arrow)
+{
+  switch (_mode) {
+    case SM_INSERT:
+    insertModeArrowHandler(arrow);
+    break;
+
+    case SM_EDIT_FILENAME:
+    break;
+
+    default:
+  }
+}
+
+static void insertModeArrowHandler(dir_e arrow)
 {
   switch (arrow) {
     case DIR_UP:
@@ -113,11 +133,40 @@ static void inputHandleArrow(dir_e arrow)
 
 static void inputHandleText(char c)
 {
-  draw_insert_text(c, get_terminal_columns());
-  ttyRefresh();
+  switch (_mode) {
+    case SM_INSERT:
+    draw_insert_text(c, get_terminal_columns());
+    ttyRefresh();
+    break;
+
+    case SM_EDIT_FILENAME:
+    toolbar_append_filename_char(c);
+    draw_toolbar();
+    break;
+
+    default:
+  }
 }
 
+static void insertModeControlHandler(char c);
+static void editFilenameModeControlHandler(char c);
+
 static void inputHandleControl(char c)
+{
+  switch (_mode) {
+    case SM_INSERT:
+    insertModeControlHandler(c);
+    break;
+
+    case SM_EDIT_FILENAME:
+    editFilenameModeControlHandler(c);
+    break;
+
+    default:
+  }
+}
+
+static void insertModeControlHandler(char c)
 {
   switch (c) {
     case ANSI_DEL_CHAR:
@@ -135,6 +184,36 @@ static void inputHandleControl(char c)
       break;
 
     case ANSI_CTRL_T_CHAR:
+      ttySetCursorVisibility(0);
+      draw_toolbar();
+      _mode = SM_EDIT_FILENAME;
+      break;
+
+    case ANSI_CTRL_S_CHAR:
+      break;
+
+    default:
+  }
+}
+
+static void editFilenameModeControlHandler(char c)
+{
+  switch (c) {
+    case ANSI_DEL_CHAR:
+      toolbar_remove_filename_char();
+      draw_toolbar();
+      break;
+
+    case '\r':
+    case ANSI_CTRL_T_CHAR:
+      _mode = SM_INSERT;
+      ttySetCursorVisibility(1);
+      draw_cursor();
+      ttyRefresh();
+      break;
+
+    case ANSI_CTRL_X_CHAR:
+      _exitFlag = true;
       break;
 
     case ANSI_CTRL_S_CHAR:

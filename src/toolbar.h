@@ -1,3 +1,9 @@
 void toolbar_init(void);
 
 void toolbar_update_filename(const char* filename);
+
+void draw_toolbar(void);
+
+void toolbar_append_filename_char(char c);
+
+void toolbar_remove_filename_char(void);
