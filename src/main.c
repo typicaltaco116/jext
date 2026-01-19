@@ -45,11 +45,11 @@ int main(int argc, char** argv)
   loadFileBuffer(argv[1]);
   initTextWindow();
 
-  while(input_handler());
+  while (input_handler());
 
   ttyRestore();
 
-  if(!write_current_buffer(get_toolbar_filename_string())) {
+  if (!write_current_buffer(get_toolbar_filename_string())) {
     printf("Failed to write file %s\n", get_toolbar_filename_string());
   } else {
     printf("Successful write to file %s\n", get_toolbar_filename_string());

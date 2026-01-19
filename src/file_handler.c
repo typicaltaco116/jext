@@ -22,14 +22,15 @@ line_t* create_file_buffer(const char* filename, line_end_e* newlineMode)
   line_t* previousLine = NULL;
 
   filePtr = fopen(filename, "r");
-
-  if (filePtr == NULL) {
-    return NULL;
-  }
-
+  
   _currentNewlineMode = getFileLineEnding(filePtr);
   if (newlineMode != NULL) {
     *newlineMode = _currentNewlineMode;
+  }
+
+  if (filePtr == NULL) {
+    _currentBuffer = create_empty_line();
+    return _currentBuffer;
   }
 
   do {
@@ -55,6 +56,10 @@ line_t* create_file_buffer(const char* filename, line_end_e* newlineMode)
 static line_end_e getFileLineEnding(FILE* stream)
 {
   int c;
+
+  if (stream == NULL) {
+    return UNIX_LINE_END; // return default
+  }
 
   do {
     c = fgetc(stream);
