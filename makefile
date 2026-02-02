@@ -7,12 +7,14 @@ objects = build/main.o build/terminal.o build/drawing.o build/input.o \
 linking_flags = -lncurses -ltinfo
 
 CC = gcc
-CFLAGS = -Wall 
+CFLAGS = -Wall -O3 -std=c99
 
 #Default Target
 jext: $(objects)
 	gcc -o jext $^ $(linking_flags) $(CFLAGS)
 
+static-build: CFLAGS += -static
+static-build: jext
 debug: CFLAGS += -g
 debug: jext
 	gdb jext
