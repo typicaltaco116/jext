@@ -34,7 +34,7 @@ bool input_handler(void)
       inputHandleControl((char)inputData);
       break;
 
-    default:
+    default: break;
   }
 
   return !_exitFlag;
@@ -101,7 +101,7 @@ static void inputHandleArrow(dir_e arrow)
     case SM_EDIT_FILENAME:
     break;
 
-    default:
+    default: break;
   }
 }
 
@@ -124,7 +124,7 @@ static void insertModeArrowHandler(dir_e arrow)
       walk_cursor(0, 1);
       break;
 
-    default:
+    default: break;
   }
 
   draw_cursor();
@@ -144,7 +144,7 @@ static void inputHandleText(char c)
     draw_toolbar(true);
     break;
 
-    default:
+    default: break;
   }
 }
 
@@ -162,7 +162,7 @@ static void inputHandleControl(char c)
     editFilenameModeControlHandler(c);
     break;
 
-    default:
+    default: break;
   }
 }
 
@@ -192,7 +192,7 @@ static void insertModeControlHandler(char c)
     case ANSI_CTRL_S_CHAR:
       break;
 
-    default:
+    default: break;
   }
 }
 
@@ -220,6 +220,6 @@ static void editFilenameModeControlHandler(char c)
     case ANSI_CTRL_S_CHAR:
       break;
 
-    default:
+    default: break;
   }
 }
