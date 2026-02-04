@@ -7,11 +7,12 @@ objects = build/main.o build/terminal.o build/drawing.o build/input.o \
 linking_flags = -lncurses -ltinfo
 
 CC = gcc
-CFLAGS = -Wall -O3 -std=c99
+CFLAGS = -Wall -std=c99
 
 #Default Target
+jext: CFLAGS += -O3
 jext: $(objects)
-	gcc -o jext $^ $(linking_flags) $(CFLAGS)
+	$(CC) -o jext $^ $(linking_flags) $(CFLAGS)
 
 static-build: CFLAGS += -static
 static-build: jext
@@ -19,7 +20,8 @@ debug: CFLAGS += -g
 debug: jext
 	gdb jext
 
-build/%.o: src/%.c
+
+build/%.o: src/%.c | build
 	$(CC) $(CFLAGS) -c $< -o $@
 
 build/main.o: $(filter-out build/main.o, $(objects)) 
@@ -41,6 +43,9 @@ build/file_handler.o: src/file_handler.h src/data_structures.h
 build/cursor.o: src/cursor.h src/data_structures.h
 
 build/toolbar.o: src/toolbar.h src/terminal.h
+
+build:
+	mkdir -p build/
 
 .PHONY: clean
 clean:
