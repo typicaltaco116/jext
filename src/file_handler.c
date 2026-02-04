@@ -17,158 +17,158 @@ static line_end_e _currentNewlineMode;
 
 line_t* create_file_buffer(const char* filename, line_end_e* newlineMode)
 {
-  FILE* filePtr;
-  line_t* currentLine;
-  line_t* previousLine = NULL;
+    FILE* filePtr;
+    line_t* currentLine;
+    line_t* previousLine = NULL;
 
-  filePtr = fopen(filename, "r");
-  
-  _currentNewlineMode = getFileLineEnding(filePtr);
-  if (newlineMode != NULL) {
-    *newlineMode = _currentNewlineMode;
-  }
+    filePtr = fopen(filename, "r");
 
-  if (filePtr == NULL) {
-    _currentBuffer = create_empty_line();
-    return _currentBuffer;
-  }
-
-  do {
-    currentLine = create_empty_line();
-    currentLine->previous = previousLine;
-    if (previousLine != NULL) {
-      previousLine->next = currentLine;
+    _currentNewlineMode = getFileLineEnding(filePtr);
+    if (newlineMode != NULL) {
+        *newlineMode = _currentNewlineMode;
     }
-    previousLine = currentLine;
-  } while (!getline_list(previousLine, LINE_MAX, filePtr));
 
-  // Seek back to start
-  while (currentLine->previous != NULL) {
-    currentLine = currentLine->previous;
-  }
+    if (filePtr == NULL) {
+        _currentBuffer = create_empty_line();
+        return _currentBuffer;
+    }
 
-  // Set internal variable
-  _currentBuffer = currentLine;
+    do {
+        currentLine = create_empty_line();
+        currentLine->previous = previousLine;
+        if (previousLine != NULL) {
+            previousLine->next = currentLine;
+        }
+        previousLine = currentLine;
+    } while (!getline_list(previousLine, LINE_MAX, filePtr));
 
-  return currentLine; // return first line
+    // Seek back to start
+    while (currentLine->previous != NULL) {
+        currentLine = currentLine->previous;
+    }
+
+    // Set internal variable
+    _currentBuffer = currentLine;
+
+    return currentLine; // return first line
 }
 
 static line_end_e getFileLineEnding(FILE* stream)
 {
-  int c;
+    int c;
 
-  if (stream == NULL) {
-    return UNIX_LINE_END; // return default
-  }
+    if (stream == NULL) {
+        return UNIX_LINE_END; // return default
+    }
 
-  do {
-    c = fgetc(stream);
-    if (c == (int)'\r') {
-      c = fgetc(stream);
-      if(c == (int)'\n') {
-        rewind(stream);
-        return DOS_LINE_END;
-      } else {
-        rewind(stream);
-        return OSX_LINE_END;
-      }
-    }
-    if (c == (int)'\n') {
-      rewind(stream);
-      return UNIX_LINE_END;
-    }
-  } while (c != EOF);
-  rewind(stream);
-  return UNIX_LINE_END; // error unknown!!!
+    do {
+        c = fgetc(stream);
+        if (c == (int)'\r') {
+            c = fgetc(stream);
+            if(c == (int)'\n') {
+                rewind(stream);
+                return DOS_LINE_END;
+            } else {
+                rewind(stream);
+                return OSX_LINE_END;
+            }
+        }
+        if (c == (int)'\n') {
+            rewind(stream);
+            return UNIX_LINE_END;
+        }
+    } while (c != EOF);
+    rewind(stream);
+    return UNIX_LINE_END; // error unknown!!!
 }
 
 static bool getline_list(line_t* emptyLine,int32_t n, FILE* stream)
 {
-  int c;
-  node_t* node;
+    int c;
+    node_t* node;
 
-  do {
-    c = fgetc(stream);
-    n--;
+    do {
+        c = fgetc(stream);
+        n--;
 
-    if (!isIgnoreCharacter(c)) {
-      emptyLine->base = create_empty_node();
-      emptyLine->base->c = (char)c;
+        if (!isIgnoreCharacter(c)) {
+            emptyLine->base = create_empty_node();
+            emptyLine->base->c = (char)c;
+        }
+
+    } while ((c != (int)'\n') && (c != EOF) && (n != 0) && 
+            (emptyLine->base == NULL));
+
+    node = emptyLine->base;
+
+    while ((c != (int)'\n') && (c != EOF) && (n != 0)) {
+        c = fgetc(stream);
+        n--;
+
+        if (!isIgnoreCharacter(c)) {
+            node->next = create_empty_node();
+            node = node->next;
+            node->c = (char)c;
+        }
+
     }
 
-  } while ((c != (int)'\n') && (c != EOF) && (n != 0) && 
-           (emptyLine->base == NULL));
-
-  node = emptyLine->base;
-
-  while ((c != (int)'\n') && (c != EOF) && (n != 0)) {
-    c = fgetc(stream);
-    n--;
-
-    if (!isIgnoreCharacter(c)) {
-      node->next = create_empty_node();
-      node = node->next;
-      node->c = (char)c;
-    }
-
-  }
-
-  return (c == EOF);
+    return (c == EOF);
 }
 
 static bool isIgnoreCharacter(int c)
 {
-  return (c == '\r') || (c == '\n') || (c == EOF);
+    return (c == '\r') || (c == '\n') || (c == EOF);
 }
 
 bool write_current_buffer(const char* filename)
 {
-  return write_file_buffer(_currentBuffer, filename, _currentNewlineMode);
+    return write_file_buffer(_currentBuffer, filename, _currentNewlineMode);
 }
 
 bool write_file_buffer(line_t* buffer, const char* filename, line_end_e newlineMode)
 {
-  FILE* filePtr;
-  line_t* line;
-  char newlineStr[3];
+    FILE* filePtr;
+    line_t* line;
+    char newlineStr[3];
 
-  filePtr = fopen(filename, "w");
-  line = buffer;
+    filePtr = fopen(filename, "w");
+    line = buffer;
 
-  switch (newlineMode) {
-    case UNIX_LINE_END:
-      newlineStr[0] = '\n';
-      newlineStr[1] = '\0';
-      break;
-    case DOS_LINE_END:
-      newlineStr[0] = '\r';
-      newlineStr[1] = '\n';
-      newlineStr[2] = '\0';
-      break;
-    default:
-      newlineStr[0] = '\0'; // no support for OSX_LINE_END reading yet
-      break;
-  }
-
-  while (line != NULL) {
-    writeline_list(line, filePtr);
-    if (line->next != NULL) {
-      fputs(newlineStr, filePtr);
+    switch (newlineMode) {
+        case UNIX_LINE_END:
+            newlineStr[0] = '\n';
+            newlineStr[1] = '\0';
+            break;
+        case DOS_LINE_END:
+            newlineStr[0] = '\r';
+            newlineStr[1] = '\n';
+            newlineStr[2] = '\0';
+            break;
+        default:
+            newlineStr[0] = '\0'; // no support for OSX_LINE_END reading yet
+            break;
     }
-    line = line->next;
-  }
 
-  return (fclose(filePtr) != EOF); // return false upon failure
+    while (line != NULL) {
+        writeline_list(line, filePtr);
+        if (line->next != NULL) {
+            fputs(newlineStr, filePtr);
+        }
+        line = line->next;
+    }
+
+    return (fclose(filePtr) != EOF); // return false upon failure
 }
 
 static void writeline_list(line_t* line, FILE* stream)
 {
-  node_t* node;
+    node_t* node;
 
-  node = line->base;
+    node = line->base;
 
-  while (node != NULL) {
-    fputc(node->c, stream);
-    node = node->next;
-  }
+    while (node != NULL) {
+        fputc(node->c, stream);
+        node = node->next;
+    }
 }

@@ -15,6 +15,7 @@ typedef enum {
 } dir_e;
 
 typedef enum {
+  SM_NORMAL,
   SM_INSERT,
   SM_EDIT_FILENAME,
   SM_QUIT,

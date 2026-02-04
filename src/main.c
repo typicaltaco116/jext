@@ -18,59 +18,59 @@ static void program_argument_handler(int, char**);
 
 static void loadFileBuffer(char* filename)
 {
-  fileBuffer = create_file_buffer(filename, NULL);
-  if (fileBuffer == NULL) {
-    fileBuffer = create_empty_line(); // new file
-  }
-  cursor_attach_buffer(fileBuffer);
+    fileBuffer = create_file_buffer(filename, NULL);
+    if (fileBuffer == NULL) {
+        fileBuffer = create_empty_line(); // new file
+    }
+    cursor_attach_buffer(fileBuffer);
 }
 
 static void initTextWindow(void)
 {
-  draw_entire_text_window(fileBuffer, 0);
-  move_cursor(0, 0);
-  draw_cursor();
-  ttyRefresh();
+    draw_entire_text_window(fileBuffer, 0);
+    move_cursor(0, 0);
+    draw_cursor();
+    ttyRefresh();
 }
 
 int main(int argc, char** argv)
 {
-  program_argument_handler(argc, argv);
-  signal(SIGINT, program_interrupt_handler);
+    program_argument_handler(argc, argv);
+    signal(SIGINT, program_interrupt_handler);
 
-  ttySetup();
+    ttySetup();
 
-  toolbar_init();
-  toolbar_update_filename(argv[1]);
-  loadFileBuffer(argv[1]);
-  initTextWindow();
+    toolbar_init();
+    toolbar_update_filename(argv[1]);
+    loadFileBuffer(argv[1]);
+    initTextWindow();
 
-  while (input_handler());
+    while (input_handler());
 
-  ttyRestore();
+    ttyRestore();
 
-  if (!write_current_buffer(get_toolbar_filename_string())) {
-    printf("Failed to write file %s\n", get_toolbar_filename_string());
-  } else {
-    printf("Successful write to file %s\n", get_toolbar_filename_string());
-  }
+    if (!write_current_buffer(get_toolbar_filename_string())) {
+        printf("Failed to write file %s\n", get_toolbar_filename_string());
+    } else {
+        printf("Successful write to file %s\n", get_toolbar_filename_string());
+    }
 
-  free_all_lines(&fileBuffer);
-  toolbar_free_all();
+    free_all_lines(&fileBuffer);
+    toolbar_free_all();
 
-  return 0;
+    return 0;
 }
 
 static void program_interrupt_handler(int signal)
 {
-  ttyRestore();
-  exit(0);
+    ttyRestore();
+    exit(0);
 }
 
 static void program_argument_handler(int argc, char** argv)
 {
-  if (argc != 2) {
-    printf("Error: INCORRECT ARGUMENTS\n");
-    exit(1);
-  }
+    if (argc != 2) {
+        printf("Error: INCORRECT ARGUMENTS\n");
+        exit(1);
+    }
 }

@@ -6,138 +6,138 @@
 
 node_t* create_empty_node(void)
 {
-  node_t* newNode;
-  newNode = malloc(sizeof(node_t));
-  newNode->next = NULL;
-  return newNode;
+    node_t* newNode;
+    newNode = malloc(sizeof(node_t));
+    newNode->next = NULL;
+    return newNode;
 }
 
 line_t* create_empty_line(void)
 {
-  line_t* newLine;
-  newLine = malloc(sizeof(line_t));
-  newLine->next = NULL;
-  newLine->previous = NULL;
-  newLine->base = NULL;
-  return newLine;
+    line_t* newLine;
+    newLine = malloc(sizeof(line_t));
+    newLine->next = NULL;
+    newLine->previous = NULL;
+    newLine->base = NULL;
+    return newLine;
 }
 
 void free_entire_list(node_t** base)
-/*
-  Frees the memory of all items in a linked list.
-  Additionally, modifies the base pointer to null to prevent dangling.
-*/
+    /*
+       Frees the memory of all items in a linked list.
+       Additionally, modifies the base pointer to null to prevent dangling.
+       */
 {
-  node_t* temp;
-  node_t* target;
+    node_t* temp;
+    node_t* target;
 
-  temp = *base;
-  *base = NULL; // prevent dangling pointer
+    temp = *base;
+    *base = NULL; // prevent dangling pointer
 
-  while (temp != NULL) {
-    target = temp;
-    temp = temp->next;
-    free(target);
-  }
+    while (temp != NULL) {
+        target = temp;
+        temp = temp->next;
+        free(target);
+    }
 }
 
 void free_line(line_t** line)
-/*
-  Frees the memory used by a line's struct and its linked list.
-  Also handles the reattachment of the line's surroundings
-*/
+    /*
+       Frees the memory used by a line's struct and its linked list.
+       Also handles the reattachment of the line's surroundings
+       */
 {
-  line_t* previous;
-  line_t* next;
+    line_t* previous;
+    line_t* next;
 
-  previous = (*line)->previous;
-  next = (*line)->next;
-  if (previous != NULL) {
-    previous->next = next;
-  }
-  if (next != NULL) {
-    next->previous = previous;
-  }
+    previous = (*line)->previous;
+    next = (*line)->next;
+    if (previous != NULL) {
+        previous->next = next;
+    }
+    if (next != NULL) {
+        next->previous = previous;
+    }
 
-  free(*line);
-  *line = NULL;
+    free(*line);
+    *line = NULL;
 }
 
 void free_line_with_list(line_t** line)
-/*
-  Frees the memory used by a line's struct and its linked list.
-  Also handles the reattachment of the line's surroundings
-*/
+    /*
+       Frees the memory used by a line's struct and its linked list.
+       Also handles the reattachment of the line's surroundings
+       */
 {
-  line_t* previous;
-  line_t* next;
+    line_t* previous;
+    line_t* next;
 
-  free_entire_list(&(*line)->base);
+    free_entire_list(&(*line)->base);
 
-  previous = (*line)->previous;
-  next = (*line)->next;
-  if (previous != NULL) {
-    previous->next = next;
-  }
-  if (next != NULL) {
-    next->previous = previous;
-  }
+    previous = (*line)->previous;
+    next = (*line)->next;
+    if (previous != NULL) {
+        previous->next = next;
+    }
+    if (next != NULL) {
+        next->previous = previous;
+    }
 
-  free(*line);
-  *line = NULL;
+    free(*line);
+    *line = NULL;
 }
 
 void free_all_lines(line_t** firstLine)
 {
-  line_t* lineToDelete;
-  line_t* line;
+    line_t* lineToDelete;
+    line_t* line;
 
-  line = *firstLine;
+    line = *firstLine;
 
-  while (line != NULL) {
-    lineToDelete = line;
-    line = line->next;
-    free_line_with_list(&lineToDelete);
-  }
+    while (line != NULL) {
+        lineToDelete = line;
+        line = line->next;
+        free_line_with_list(&lineToDelete);
+    }
 
-  *firstLine = NULL;
+    *firstLine = NULL;
 }
 
 line_t* index_buffer(line_t* buffer, int32_t index)
 {
-  line_t* line = buffer;
+    line_t* line = buffer;
 
-  while ((index != 0) && (line != NULL)) {
-    line = line->next;
-    index--;
-  }
+    while ((index != 0) && (line != NULL)) {
+        line = line->next;
+        index--;
+    }
 
-  return line;
+    return line;
 }
 
 node_t* index_line(line_t* line, int32_t index)
 {
-  node_t* node = line->base;
+    node_t* node = line->base;
 
-  while ((index != 0) && (node != NULL)) {
-    node = node->next;
-    index--;
-  }
+    while ((index != 0) && (node != NULL)) {
+        node = node->next;
+        index--;
+    }
 
-  return node;
+    return node;
 }
 
 int32_t get_line_length(line_t* line)
 {
-  int32_t length = 0;
-  node_t* node;
+    int32_t length = 0;
+    node_t* node;
 
-  node = line->base;
+    node = line->base;
 
-  while (node != NULL) {
-    node = node->next;
-    length++;
-  }
+    while (node != NULL) {
+        node = node->next;
+        length++;
+    }
 
-  return length;
+    return length;
 }
