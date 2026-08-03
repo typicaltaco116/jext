@@ -169,6 +169,7 @@ static void inputHandleControl(char c)
 static void insertModeControlHandler(char c)
 {
     switch (c) {
+		case '\b':
         case ANSI_DEL_CHAR:
             draw_delete_text(get_terminal_columns());
             ttyRefresh();
@@ -199,6 +200,7 @@ static void insertModeControlHandler(char c)
 static void editFilenameModeControlHandler(char c)
 {
     switch (c) {
+		case '\b':
         case ANSI_DEL_CHAR:
             toolbar_remove_filename_char();
             draw_toolbar(true);
