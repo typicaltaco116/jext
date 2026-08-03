@@ -25,11 +25,17 @@ add_executable(jext
 target_link_libraries(jext ${CURSES_LIBRARIES})
 
 # Enable all warnings
-if(CMAKE_C_COMPILER_ID STREQUAL "GNU")
+if (CMAKE_C_COMPILER_ID STREQUAL "GNU")
     # GCC Compiler
     set(CMAKE_C_COMPILER "gcc")
     target_compile_options(jext PRIVATE -Wall)
-elseif(CMAKE_C_COMPILER_ID STREQUAL "MSVC")
+elseif (CMAKE_C_COMPILER_ID STREQUAL "MSVC")
     # Microsoft Visual Studio Compiler
     target_compile_options(jext PRIVATE /W4)
+endif()
+
+# DOS Version of NCurses does not support runtime dynamic linking.
+# Linking errors will if NCURSES_STATIC is not defined.
+if (WIN32)
+	add_definitions(-DNCURSES_STATIC)
 endif()
