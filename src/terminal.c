@@ -7,7 +7,7 @@
 #include <stdio.h>
 #include <unistd.h>
 #include <stdlib.h>
-#include <ncurses.h>
+#include <ncurses/ncurses.h>
 
 static int32_t _terminalColumns = 0;
 static int32_t _terminalRows = 0;

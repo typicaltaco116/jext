@@ -17,7 +17,7 @@ set(SOURCES
 )
 
 find_package(Curses REQUIRED)
-include_directories(${CURSES_INCLUDE_DIR})
+include_directories(jext ${CURSES_INCLUDE_DIRS})
 
 add_executable(jext
     ${SOURCES}
