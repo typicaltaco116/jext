@@ -1,6 +1,9 @@
 cmake_minimum_required(VERSION 3.10)
 
 project(jext LANGUAGES C)
+set(CMAKE_C_STANDARD 99)
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/bin")
+set(CMAKE_VERBOSE_MAKEFILE ON)
 
 set(SOURCES
     src/main.c
@@ -13,20 +16,20 @@ set(SOURCES
     src/toolbar.c
 )
 
+find_package(Curses REQUIRED)
+include_directories(${CURSES_INCLUDE_DIR})
+
 add_executable(jext
     ${SOURCES}
 )
+target_link_libraries(jext ${CURSES_LIBRARIES})
 
-set(LINKING_FLAGS
-    -lncurses -ltinfo
-)
-
-set(C_FLAGS
-    -Wall -std=c99
-)
-
-target_link_options(jext PRIVATE ${LINKING_FLAGS})
-target_compile_options(jext PRIVATE ${C_FLAGS})
-
-set(CMAKE_C_COMPILER gcc)
-
+# Enable all warnings
+if(CMAKE_C_COMPILER_ID STREQUAL "GNU")
+    # GCC Compiler
+    set(CMAKE_C_COMPILER "gcc")
+    target_compile_options(jext PRIVATE -Wall)
+elseif(CMAKE_C_COMPILER_ID STREQUAL "MSVC")
+    # Microsoft Visual Studio Compiler
+    target_compile_options(jext PRIVATE /W4)
+endif()
