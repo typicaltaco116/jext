@@ -3,7 +3,7 @@
 #include "types.h"
 #include "terminal.h"
 
-#include <ncurses.h>
+#include <ncurses/ncurses.h>
 #include <stdlib.h>
 
 #define TOOLBAR_FILENAME_ROW 0
