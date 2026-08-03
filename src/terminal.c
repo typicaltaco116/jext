@@ -4,9 +4,12 @@
 #include "types.h"
 
 #include <stdio.h>
-#include <unistd.h>
 #include <stdlib.h>
 #include <ncurses/ncurses.h>
+
+#ifdef _WIN32
+#include <windows.h>
+#endif
 
 static int32_t _terminalColumns = 0;
 static int32_t _terminalRows = 0;
@@ -14,6 +17,10 @@ static int32_t _textColumns = 0;
 static int32_t _textRows = 0;
 
 static WINDOW* _textWindow;
+
+#ifdef _WIN32
+static DWORD _originalConsoleMode;
+#endif
 
 static void getTerminalSize(int32_t* x, int32_t* y)
 {
@@ -32,12 +39,29 @@ void ttySetup(void)
     _textColumns = _terminalColumns;
     _textWindow = newwin(_textRows, _textColumns, 0, 0);
     scrollok(_textWindow, true);
+
+#ifdef _WIN32
+    HANDLE stdHandle = GetStdHandle(STD_INPUT_HANDLE);
+    if (GetConsoleMode(stdHandle, &_originalConsoleMode)) {
+        DWORD mode = _originalConsoleMode;
+        // Disable line buffer, echo, and system processing of signals
+        mode &= ~(ENABLE_LINE_INPUT | ENABLE_ECHO_INPUT | ENABLE_PROCESSED_INPUT);
+        mode |= ENABLE_VIRTUAL_TERMINAL_INPUT;
+        SetConsoleMode(stdHandle, mode);
+    }
+    // Disable C runtime buffering so fgetc grabs keys instantly
+    setvbuf(stdin, NULL, _IONBF, 0);
+#endif
 }
 
 void ttyRestore(void)
 {
     endwin();
     ttySetCursorVisibility(1);
+#ifdef _WIN32
+    HANDLE stdHandle = GetStdHandle(STD_INPUT_HANDLE);
+    SetConsoleMode(stdHandle, _originalConsoleMode);
+#endif
 }
 
 void ttyMoveCursor(u16 x, u16 y)
