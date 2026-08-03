@@ -3,7 +3,6 @@
 #include "ANSI_codes.h"
 #include "types.h"
 
-#include <sys/ioctl.h>
 #include <stdio.h>
 #include <unistd.h>
 #include <stdlib.h>
@@ -18,14 +17,7 @@ static WINDOW* _textWindow;
 
 static void getTerminalSize(int32_t* x, int32_t* y)
 {
-    struct winsize w;
-
-    if (ioctl(STDOUT_FILENO, TIOCGWINSZ, &w) == -1) {
-        exit(EXIT_FAILURE);
-    }
-
-    *x = w.ws_col;
-    *y = w.ws_row;
+    getmaxyx(stdscr, *y, *x);
 }
 
 void ttySetup(void)
