@@ -5,7 +5,7 @@ A simple text editor written in C.
 - CMake v3.10
 - Ncurses v4.2
 
-#### Linux Dependency installation
+### Linux Dependency installation
 For Debian based distros (apt package manager)
 ```
 sudo apt update
