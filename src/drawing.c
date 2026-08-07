@@ -1,10 +1,10 @@
-#include "drawing.h"
+#include <jext/drawing.h>
 
-#include "types.h"
-#include "terminal.h"
-#include "ANSI_codes.h"
-#include "data_structures.h"
-#include "cursor.h"
+#include <jext/types.h>
+#include <jext/terminal.h>
+#include <jext/ANSI_codes.h>
+#include <jext/data_structures.h>
+#include <jext/cursor.h>
 
 #include <stdlib.h>
 #include <stdio.h>

@@ -1,6 +1,6 @@
-#include "data_structures.h"
+#include <jext/data_structures.h>
 
-#include "types.h"
+#include <jext/types.h>
 
 #include <stdlib.h>
 

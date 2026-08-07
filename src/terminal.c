@@ -1,7 +1,7 @@
-#include "terminal.h"
+#include <jext/terminal.h>
 
-#include "ANSI_codes.h"
-#include "types.h"
+#include <jext/ANSI_codes.h>
+#include <jext/types.h>
 
 #include <stdio.h>
 #include <stdlib.h>

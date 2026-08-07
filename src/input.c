@@ -1,11 +1,11 @@
-#include "input.h"
+#include <jext/input.h>
 
-#include "types.h"
-#include "ANSI_codes.h"
-#include "cursor.h"
-#include "drawing.h"
-#include "terminal.h"
-#include "toolbar.h"
+#include <jext/types.h>
+#include <jext/ANSI_codes.h>
+#include <jext/cursor.h>
+#include <jext/drawing.h>
+#include <jext/terminal.h>
+#include <jext/toolbar.h>
 
 #include <stdio.h>
 

@@ -1,7 +1,7 @@
-#include "file_handler.h"
+#include <jext/file_handler.h>
 
-#include "types.h"
-#include "data_structures.h"
+#include <jext/types.h>
+#include <jext/data_structures.h>
 
 #include <stdio.h>
 

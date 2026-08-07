@@ -5,6 +5,8 @@ set(CMAKE_C_STANDARD 99)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/bin")
 set(CMAKE_VERBOSE_MAKEFILE ON)
 
+set(JEXT_INCLUDE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/include)
+
 set(SOURCES
     src/main.c
     src/terminal.c
@@ -17,11 +19,12 @@ set(SOURCES
 )
 
 find_package(Curses REQUIRED)
-include_directories(jext ${CURSES_INCLUDE_DIRS})
 
 add_executable(jext
     ${SOURCES}
 )
+target_include_directories(jext PRIVATE ${CURSES_INCLUDE_DIRS})
+target_include_directories(jext PRIVATE ${JEXT_INCLUDE_PATH})
 target_link_libraries(jext ${CURSES_LIBRARIES})
 
 # Enable all warnings

@@ -1,7 +1,7 @@
-#include "toolbar.h"
+#include <jext/toolbar.h>
 
-#include "types.h"
-#include "terminal.h"
+#include <jext/types.h>
+#include <jext/terminal.h>
 
 #include <ncurses/ncurses.h>
 #include <stdlib.h>

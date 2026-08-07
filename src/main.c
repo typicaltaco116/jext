@@ -1,11 +1,11 @@
-#include "drawing.h"
-#include "data_structures.h"
-#include "file_handler.h"
-#include "terminal.h"
-#include "input.h"
-#include "cursor.h"
-#include "toolbar.h"
-#include "toolbar.h"
+#include <jext/drawing.h>
+#include <jext/data_structures.h>
+#include <jext/file_handler.h>
+#include <jext/terminal.h>
+#include <jext/input.h>
+#include <jext/cursor.h>
+#include <jext/toolbar.h>
+#include <jext/toolbar.h>
 
 #include <stdlib.h>
 #include <signal.h>

@@ -1,7 +1,7 @@
-#include "cursor.h"
+#include <jext/cursor.h>
 
-#include "types.h"
-#include "data_structures.h"
+#include <jext/types.h>
+#include <jext/data_structures.h>
 
 #include <stdlib.h>
 
